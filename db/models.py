@@ -41,6 +41,19 @@ class Result(SQLModel, table=True):
     meet_id: Optional[int] = Field(default=None, foreign_key="meet.id")
 
 
+class SimpleResult(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    athlete_id: int
+    result: str
+    meet_id: int
+    season: int
+    school_id: int
+    distance: int
+    pr: bool
+    sb: bool
+    place: int
+
+
 db_name = "anet_results"
 db_string = f"postgresql:///{db_name}"
 

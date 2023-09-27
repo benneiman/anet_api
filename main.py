@@ -10,7 +10,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/team/")
+@app.get("/team/getInfo")
 async def team_info(team_id: int, sport: str, season: int):
     if sport not in ("xc", "tfo", "tfi"):
         raise HTTPException(
@@ -64,7 +64,7 @@ async def team_info(team_id: int, sport: str, season: int):
     }
 
 
-@app.get("/meet/")
+@app.get("/meet/getResults")
 async def get_meet_results(meet_id: int, sport: str):
     if sport not in ("xc", "tf"):
         raise HTTPException(
@@ -94,6 +94,7 @@ async def get_meet_results(meet_id: int, sport: str):
                 "score_depth": race["ScoreDepth"],
                 "start_time": race["RaceTime"],
                 "results": [],
+                "team_scores": [],
             }
             for race in meet_payload["xcDivisions"]
         ],
@@ -121,4 +122,25 @@ async def get_meet_results(meet_id: int, sport: str):
         for race in meet_data["races"]:
             if race_id == race["race_id"]:
                 race["results"].append(finisher_details)
+
+    for team_score in results.json()["teamScores"]:
+        score_copy = team_score.copy()
+        for race in meet_data["races"]:
+            if team_score["DivisionID"] == race["race_id"]:
+                score_copy.pop("DivisionID")
+                score_copy.pop("rawName")
+                race["team_scores"].append(score_copy)
+
     return meet_data
+
+
+@app.get("/search/getResults")
+async def get_search_results(query: str):
+    """Search API
+    Wrapper for
+    """
+    params = dict(q=query)
+    request = requests.get(
+        "https://www.athletic.net/api/v1/AutoComplete/search", params=params
+    )
+    return request.json()
