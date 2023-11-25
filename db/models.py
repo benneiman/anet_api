@@ -8,8 +8,10 @@ from datetime import date, time
 class Athlete(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     anet_id: int
-    name: str
+    first_name: str
+    last_name: str
     gender: str
+    age: int
 
     results: List["Result"] = Relationship(back_populates="athlete")
 
@@ -32,7 +34,10 @@ class Result(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     anet_id: int
     result: time
+    distance: int
     place: int
+    pb: bool
+    sb: bool
 
     athlete_id: Optional[int] = Field(default=None, foreign_key="athlete.id")
     athlete: Optional[Athlete] = Relationship(back_populates="results")

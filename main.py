@@ -1,8 +1,22 @@
 import requests
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+
+from sqlmodel import Session
+from db import Team
+
+from db.database import SessionLocal
+from db.utils import create_team
 
 app = FastAPI()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @app.get("/")
@@ -62,6 +76,11 @@ async def team_info(team_id: int, sport: str, season: int):
         "roster": roster.json(),
         "schedule": schedule_output,
     }
+
+
+@app.post("/team/addTeam", response_model=Team)
+async def add_team(team: Team, session: Session = Depends(get_db)):
+    return create_team(session, team)
 
 
 @app.get("/meet/getResults")
@@ -132,6 +151,44 @@ async def get_meet_results(meet_id: int, sport: str):
                 race["team_scores"].append(score_copy)
 
     return meet_data
+
+
+@app.get("/athlete/getRaces")
+async def get_race_history(athlete_id: int, sport: str, level: int = 4):
+    params = dict(athleteId=athlete_id, sport=sport, level=level)
+    request = requests.get(
+        "https://www.athletic.net/api/v1/AthleteBio/GetAthleteBioData", params=params
+    )
+
+    result_key = "results" + str.upper(sport)
+
+    results = request.json()[result_key]
+
+    results_output = [
+        {
+            "anet_resultid": race["IDResult"],
+            "anet_meetid": race["MeetID"],
+            "result": race["Result"],
+            "distance": race["Distance"],
+            "place": race["Place"],
+            "pb": race["PersonalBest"],
+            "sb": race["SeasonBest"],
+        }
+        for race in results
+    ]
+
+    athlete = request.json()["athlete"]
+    athlete_output = {
+        "anet_athleteid": athlete["IDAthlete"],
+        "anet_schoolid": athlete["SchoolID"],
+        "gender": athlete["Gender"],
+        "age": athlete["age"],
+        "races": results_output,
+    }
+
+    # TODO: handle eventsTF dict for track results
+
+    return athlete_output
 
 
 @app.get("/search/getResults")

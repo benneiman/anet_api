@@ -8,6 +8,7 @@ fastapi = {extras = ["all"], version = "*"}
 uvicorn = {extras = ["standard"], version = "*"}
 sqlmodel = "*"
 psycopg2 = "*"
+alembic = "*"
 
 [dev-packages]
 jupyterlab = "*"
