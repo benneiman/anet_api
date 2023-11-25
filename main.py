@@ -3,10 +3,15 @@ import requests
 from fastapi import FastAPI, HTTPException, Depends
 
 from sqlmodel import Session
-from db import Team, Athlete, Result, Meet
+from db import TeamRead, TeamCreate, AthleteRead, AthleteCreate, Result, Meet
 
 from db.database import SessionLocal
-from db.utils import create_team, get_team_by_anet_id
+from db.utils import (
+    create_team,
+    create_athlete,
+    get_team_by_anet_id,
+    get_athlete_by_anet_id,
+)
 
 app = FastAPI()
 
@@ -64,7 +69,7 @@ async def team_info(team_id: int, sport: str, season: int):
             "state": meet["State"],
             "zipcode": meet["PostalCode"],
             "location": meet["Location"],
-            "date": meet["Date"],
+            "date": meet["StartDate"],
         }
         for meet in schedule.json()
     ]
@@ -78,8 +83,8 @@ async def team_info(team_id: int, sport: str, season: int):
     }
 
 
-@app.post("/team/addTeam", response_model=Team)
-async def add_team(team: Team, session: Session = Depends(get_db)):
+@app.post("/team/addTeam", response_model=TeamRead)
+async def add_team(team: TeamCreate, session: Session = Depends(get_db)):
     team_check = get_team_by_anet_id(session, anet_id=team.anet_id)
     if team_check:
         raise HTTPException(status_code=400, detail="Team already exists")
@@ -194,9 +199,12 @@ async def get_race_history(athlete_id: int, sport: str, level: int = 4):
     return athlete_output
 
 
-@app.post("/athlete/addAthlete")
-def add_athlete(athlete: Athlete, session: Session = Depends(get_db)):
-    pass
+@app.post("/athlete/addAthlete", response_model=AthleteRead)
+def add_athlete(athlete: AthleteCreate, session: Session = Depends(get_db)):
+    athlete_check = get_athlete_by_anet_id(session, anet_id=athlete.anet_id)
+    if athlete_check:
+        raise HTTPException(status_code=400, detail="Athlete already exists")
+    return create_athlete(session, athlete)
 
 
 @app.get("/search/getResults")

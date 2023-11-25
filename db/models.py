@@ -5,21 +5,43 @@ from sqlmodel import Field, Relationship, Session, SQLModel, create_engine
 from datetime import date, time
 
 
-class Athlete(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class AthleteBase(SQLModel):
     anet_id: int
     first_name: str
     last_name: str
     gender: str
-    age: int
-
-    results: List["Result"] = Relationship(back_populates="athlete")
+    age: Optional[int]
 
 
-class Team(SQLModel, table=True):
+class Athlete(AthleteBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class AthleteCreate(AthleteBase):
+    pass
+
+
+class AthleteRead(AthleteBase):
+    id: int
+
+    # results: List["Result"] = Relationship(back_populates="athlete")
+
+
+class TeamBase(SQLModel):
     anet_id: int
     name: str
+
+
+class Team(TeamBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class TeamCreate(TeamBase):
+    pass
+
+
+class TeamRead(TeamBase):
+    id: int
 
 
 class Meet(SQLModel, table=True):
@@ -40,34 +62,7 @@ class Result(SQLModel, table=True):
     sb: bool
 
     athlete_id: Optional[int] = Field(default=None, foreign_key="athlete.id")
-    athlete: Optional[Athlete] = Relationship(back_populates="results")
+    # athlete: Optional[Athlete] = Relationship(back_populates="results")
 
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     meet_id: Optional[int] = Field(default=None, foreign_key="meet.id")
-
-
-class SimpleResult(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    athlete_id: int
-    result: str
-    meet_id: int
-    season: int
-    school_id: int
-    distance: int
-    pr: bool
-    sb: bool
-    place: int
-
-
-db_name = "anet_results"
-db_string = f"postgresql:///{db_name}"
-
-engine = create_engine(db_string, echo=True)
-
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-
-
-if __name__ == "main":
-    create_db_and_tables()
