@@ -100,7 +100,7 @@ async def team_info(team_id: int, sport: str, season: int):
         for meet in schedule.json()
     ]
     return {
-        team_data: {
+        "team_data": {
             "name": team_info["Name"],
             "city": team_info["City"],
             "state": team_info["State"],
