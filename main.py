@@ -3,10 +3,10 @@ import requests
 from fastapi import FastAPI, HTTPException, Depends
 
 from sqlmodel import Session
-from db import Team
+from db import Team, Athlete, Result, Meet
 
 from db.database import SessionLocal
-from db.utils import create_team
+from db.utils import create_team, get_team_by_anet_id
 
 app = FastAPI()
 
@@ -80,6 +80,9 @@ async def team_info(team_id: int, sport: str, season: int):
 
 @app.post("/team/addTeam", response_model=Team)
 async def add_team(team: Team, session: Session = Depends(get_db)):
+    team_check = get_team_by_anet_id(session, anet_id=team.anet_id)
+    if team_check:
+        raise HTTPException(status_code=400, detail="Team already exists")
     return create_team(session, team)
 
 
@@ -189,6 +192,11 @@ async def get_race_history(athlete_id: int, sport: str, level: int = 4):
     # TODO: handle eventsTF dict for track results
 
     return athlete_output
+
+
+@app.post("/athlete/addAthlete")
+def add_athlete(athlete: Athlete, session: Session = Depends(get_db)):
+    pass
 
 
 @app.get("/search/getResults")
