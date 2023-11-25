@@ -1,5 +1,7 @@
 import requests
 
+from datetime import datetime
+
 from fastapi import FastAPI, HTTPException, Depends
 
 from sqlmodel import Session
@@ -75,14 +77,15 @@ async def team_info(team_id: int, sport: str, season: int):
     )
     schedule_output = [
         {
-            "meet_name": meet["Name"],
+            "name": meet["Name"],
+            "venue": meet["Location"]["Name"],
             "anet_meet_id": meet["MeetID"],
-            "street_address": meet["StreetAddress"],
+            "address": meet["StreetAddress"],
             "city": meet["City"],
             "state": meet["State"],
             "zipcode": meet["PostalCode"],
-            "location": meet["Location"],
-            "date": meet["StartDate"],
+            # "location": meet["Location"],
+            "date": datetime.strptime(meet["StartDate"], "%Y-%m-%dT%H:%M:%S").date(),
         }
         for meet in schedule.json()
     ]

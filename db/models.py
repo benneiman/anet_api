@@ -27,6 +27,13 @@ class AthleteRead(AthleteBase):
     # results: List["Result"] = Relationship(back_populates="athlete")
 
 
+class AthleteUpdate(AthleteBase):
+    first_name: Optional[str]
+    last_name: Optional[str]
+    gender: Optional[str]
+    age: Optional[int]
+
+
 class TeamBase(SQLModel):
     anet_id: int
     name: str
@@ -47,7 +54,11 @@ class TeamRead(TeamBase):
 class MeetBase(SQLModel):
     anet_id: int
     name: str
-    location: str
+    venue: str
+    address: Optional[str]
+    city: str
+    state: str
+    zipcode: int
     date: date
 
 
