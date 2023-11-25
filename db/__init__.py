@@ -3,6 +3,8 @@ from .models import (
     AthleteRead,
     AthleteCreate,
     Meet,
+    MeetRead,
+    MeetCreate,
     Team,
     TeamRead,
     TeamCreate,

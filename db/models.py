@@ -44,12 +44,23 @@ class TeamRead(TeamBase):
     id: int
 
 
-class Meet(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class MeetBase(SQLModel):
     anet_id: int
     name: str
     location: str
     date: date
+
+
+class Meet(MeetBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class MeetCreate(MeetBase):
+    pass
+
+
+class MeetRead(MeetBase):
+    id: int
 
 
 class Result(SQLModel, table=True):
