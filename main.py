@@ -8,7 +8,8 @@ from db import (
     TeamCreate,
     AthleteRead,
     AthleteCreate,
-    Result,
+    ResultRead,
+    ResultCreate,
     MeetRead,
     MeetCreate,
 )
@@ -18,9 +19,11 @@ from db.utils import (
     create_team,
     create_athlete,
     create_meet,
+    create_result,
     get_team_by_anet_id,
     get_athlete_by_anet_id,
     get_meet_by_anet_id,
+    get_result_by_anet_id,
 )
 
 app = FastAPI()
@@ -169,6 +172,14 @@ async def get_meet_results(meet_id: int, sport: str):
                 race["team_scores"].append(score_copy)
 
     return meet_data
+
+
+@app.post("/meet/addResult", response_model=ResultRead)
+async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
+    result_check = get_result_by_anet_id(session, anet_id=result.anet_id)
+    if result_check:
+        raise HTTPException(status_code=400, detail="Result already exists")
+    return create_result(session, result)
 
 
 @app.post("/meet/addMeet", response_model=MeetRead)

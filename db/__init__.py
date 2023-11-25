@@ -9,4 +9,6 @@ from .models import (
     TeamRead,
     TeamCreate,
     Result,
+    ResultRead,
+    ResultCreate,
 )

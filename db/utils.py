@@ -1,6 +1,15 @@
 from sqlmodel import Session, SQLModel, select
 
-from . import Team, TeamCreate, Meet, MeetCreate, Athlete, AthleteCreate, Result
+from . import (
+    Team,
+    TeamCreate,
+    Meet,
+    MeetCreate,
+    Athlete,
+    AthleteCreate,
+    Result,
+    ResultCreate,
+)
 
 
 def create_team(session: Session, team: TeamCreate):
@@ -29,8 +38,8 @@ def get_athlete_by_anet_id(session: Session, anet_id: int):
     return session.exec(statement).first()
 
 
-def create_meet(session: Session, athlete: MeetCreate):
-    meet_item = Meet.from_orm(athlete)
+def create_meet(session: Session, meet: MeetCreate):
+    meet_item = Meet.from_orm(meet)
     session.add(meet_item)
     session.commit()
     session.refresh(meet_item)
@@ -39,4 +48,17 @@ def create_meet(session: Session, athlete: MeetCreate):
 
 def get_meet_by_anet_id(session: Session, anet_id: int):
     statement = select(Meet).where(Meet.anet_id == anet_id)
+    return session.exec(statement).first()
+
+
+def create_result(session: Session, result: ResultCreate):
+    result_item = Result.from_orm(result)
+    session.add(result_item)
+    session.commit()
+    session.refresh(result_item)
+    return result_item
+
+
+def get_result_by_anet_id(session: Session, anet_id: int):
+    statement = select(Result).where(Result.anet_id == anet_id)
     return session.exec(statement).first()

@@ -63,8 +63,7 @@ class MeetRead(MeetBase):
     id: int
 
 
-class Result(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class ResultBase(SQLModel):
     anet_id: int
     result: time
     distance: int
@@ -72,8 +71,20 @@ class Result(SQLModel, table=True):
     pb: bool
     sb: bool
 
+
+class Result(ResultBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
     athlete_id: Optional[int] = Field(default=None, foreign_key="athlete.id")
     # athlete: Optional[Athlete] = Relationship(back_populates="results")
 
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     meet_id: Optional[int] = Field(default=None, foreign_key="meet.id")
+
+
+class ResultCreate(ResultBase):
+    pass
+
+
+class ResultRead(ResultBase):
+    id: int
