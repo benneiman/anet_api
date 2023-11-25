@@ -68,6 +68,16 @@ async def team_info(team_id: int, sport: str, season: int):
         headers=headers,
         params=dict(seasonID=season),
     )
+
+    roster_output = [
+        {
+            "anet_id": athlete["ID"],
+            "first_name": athlete["Name"].split(" ", 1)[0],
+            "last_name": athlete["Name"].rsplit(" ", 1)[1],
+            "gender": athlete["Gender"],
+        }
+        for athlete in roster.json()
+    ]
     team_info = team_data.json()["team"]
 
     schedule = requests.get(
@@ -79,7 +89,7 @@ async def team_info(team_id: int, sport: str, season: int):
         {
             "name": meet["Name"],
             "venue": meet["Location"]["Name"],
-            "anet_meet_id": meet["MeetID"],
+            "anet_id": meet["MeetID"],
             "address": meet["StreetAddress"],
             "city": meet["City"],
             "state": meet["State"],
@@ -90,11 +100,13 @@ async def team_info(team_id: int, sport: str, season: int):
         for meet in schedule.json()
     ]
     return {
-        "name": team_info["Name"],
-        "city": team_info["City"],
-        "state": team_info["State"],
-        "mascot": team_info["Mascot"],
-        "roster": roster.json(),
+        team_data: {
+            "name": team_info["Name"],
+            "city": team_info["City"],
+            "state": team_info["State"],
+            "mascot": team_info["Mascot"],
+        },
+        "roster": roster_output,
         "schedule": schedule_output,
     }
 
@@ -123,7 +135,7 @@ async def get_meet_results(meet_id: int, sport: str):
     meet_data = {
         "meet": {
             "location": meet_payload["meet"]["Location"]["Name"],
-            "street_address": meet_payload["meet"]["Location"]["Address"],
+            "address": meet_payload["meet"]["Location"]["Address"],
             "city": meet_payload["meet"]["Location"]["City"],
             "state": meet_payload["meet"]["Location"]["State"],
             "zipcode": meet_payload["meet"]["Location"]["PostalCode"],
