@@ -134,6 +134,7 @@ async def get_meet_results(meet_id: int, sport: str):
 
     meet_data = {
         "meet": {
+            "meet_id": meet_id,
             "location": meet_payload["meet"]["Location"]["Name"],
             "address": meet_payload["meet"]["Location"]["Address"],
             "city": meet_payload["meet"]["Location"]["City"],
@@ -141,17 +142,17 @@ async def get_meet_results(meet_id: int, sport: str):
             "zipcode": meet_payload["meet"]["Location"]["PostalCode"],
         },
         "races": [
-            {
-                "race_id": race["IDMeetDiv"],
-                "race": race["DivName"],
-                "division": race["Division"],
-                "place_depth": race["PlaceDepth"],
-                "score_depth": race["ScoreDepth"],
-                "start_time": race["RaceTime"],
-                "results": [],
-                "team_scores": [],
-            }
-            for race in meet_payload["xcDivisions"]
+            # {
+            #     "race_id": race["IDMeetDiv"],
+            #     "race": race["DivName"],
+            #     "division": race["Division"],
+            #     "place_depth": race["PlaceDepth"],
+            #     "score_depth": race["ScoreDepth"],
+            #     "start_time": race["RaceTime"],
+            #     "results": [],
+            #     "team_scores": [],
+            # }
+            # for race in meet_payload["xcDivisions"]
         ],
     }
 
@@ -163,28 +164,42 @@ async def get_meet_results(meet_id: int, sport: str):
         ),
     )
 
-    for finisher in results.json()["results"]:
-        finisher_details = {
-            "athlete_id": finisher["AthleteID"],
-            "name": finisher["FirstName"] + " " + finisher["LastName"],
-            "team_id": finisher["TeamID"],
-            "team": finisher["SchoolName"],
-            "grade": finisher["AgeGrade"],
-            "result": finisher["Result"],
-            "place": finisher["Place"],
+    for race in results.json()["flatEvents"]:
+        race_details = {
+            "race_id": race["IDMeetDiv"],
+            "gender": race["Gender"],
+            "race_name": race["DivName"],
+            "division": race["Division"],
+            "place_depth": race["PlaceDepth"],
+            "score_depth": race["ScoreDepth"],
+            "start_time": race["RaceTime"],
+            "results": [],
+            "team_scores": [],
         }
-        race_id = finisher["RaceDivisionID"]
-        for race in meet_data["races"]:
-            if race_id == race["race_id"]:
-                race["results"].append(finisher_details)
+        for finisher in race["results"]:
+            finisher_details = {
+                "athlete_id": finisher["AthleteID"],
+                "first_name": finisher["FirstName"],
+                "last_name": finisher["LastName"],
+                "team_id": finisher["TeamID"],
+                "team": finisher["SchoolName"],
+                "grade": finisher["AgeGrade"],
+                "result": finisher["Result"],
+                "place": finisher["Place"],
+                "pb": finisher["pr"],
+                "sb": finisher["sr"],
+            }
+            race_details["results"].append(finisher_details)
+        meet_data["races"].append(race_details)
 
-    for team_score in results.json()["teamScores"]:
-        score_copy = team_score.copy()
-        for race in meet_data["races"]:
-            if team_score["DivisionID"] == race["race_id"]:
-                score_copy.pop("DivisionID")
-                score_copy.pop("rawName")
-                race["team_scores"].append(score_copy)
+        for team_score in results.json()["teamScores"]:
+            score_copy = team_score.copy()
+            for race in meet_data["races"]:
+                if team_score["DivisionID"] == race["race_id"]:
+                    score_copy.pop("DivisionID")
+                    score_copy.pop("rawName")
+                    score_copy.pop("Gender")
+                    race["team_scores"].append(score_copy)
 
     return meet_data
 
