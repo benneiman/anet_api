@@ -70,5 +70,6 @@ def get_result_by_anet_id(session: Session, anet_id: int):
 def convert_to_seconds(race_time: str):
     c = [60, 1]
     race_time = re.sub("[a-zA-z]", "", race_time)
-    t = race_time.split(":")
+    print(race_time)
+    t = [float(x) for x in race_time.split(":")]
     return sum([np.prod(lst) for lst in zip(c, t)])

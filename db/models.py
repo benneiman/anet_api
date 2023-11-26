@@ -79,7 +79,6 @@ class MeetRead(MeetBase):
 
 class ResultBase(SQLModel):
     anet_id: int
-    result: float = Field(sa_type=Double)
     distance: Optional[int]
     place: Optional[int]
     pb: Optional[bool]
@@ -87,6 +86,7 @@ class ResultBase(SQLModel):
 
 
 class Result(ResultBase, table=True):
+    result: float = Field(sa_type=Double)
     id: Optional[int] = Field(default=None, primary_key=True)
 
     athlete_id: Optional[int] = Field(default=None, foreign_key="athlete.id")
@@ -100,7 +100,12 @@ class ResultCreate(ResultBase):
     anet_athlete_id: int
     anet_team_id: int
     anet_meet_id: int
+    result: str
 
 
 class ResultRead(ResultBase):
     id: int
+    result: float
+    team_id: int
+    athlete_id: int
+    meet_id: int
