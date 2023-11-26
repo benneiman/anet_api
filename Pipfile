@@ -9,6 +9,7 @@ uvicorn = {extras = ["standard"], version = "*"}
 sqlmodel = "*"
 psycopg2 = "*"
 alembic = "*"
+numpy = "*"
 
 [dev-packages]
 jupyterlab = "*"

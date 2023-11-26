@@ -1,6 +1,9 @@
 from typing import Optional, List
 
-from sqlmodel import Field, Relationship, Session, SQLModel, create_engine
+from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy.types import Double
+from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
+
 
 from datetime import date, time
 
@@ -76,11 +79,11 @@ class MeetRead(MeetBase):
 
 class ResultBase(SQLModel):
     anet_id: int
-    result: time
-    distance: int
-    place: int
-    pb: bool
-    sb: bool
+    result: float = Field(sa_type=Double)
+    distance: Optional[int]
+    place: Optional[int]
+    pb: Optional[bool]
+    sb: Optional[bool]
 
 
 class Result(ResultBase, table=True):
@@ -94,7 +97,9 @@ class Result(ResultBase, table=True):
 
 
 class ResultCreate(ResultBase):
-    pass
+    anet_athlete_id: int
+    anet_team_id: int
+    anet_meet_id: int
 
 
 class ResultRead(ResultBase):

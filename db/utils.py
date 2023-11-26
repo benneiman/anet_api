@@ -1,3 +1,6 @@
+import numpy as np
+import re
+
 from sqlmodel import Session, SQLModel, select
 
 from . import (
@@ -62,3 +65,10 @@ def create_result(session: Session, result: ResultCreate):
 def get_result_by_anet_id(session: Session, anet_id: int):
     statement = select(Result).where(Result.anet_id == anet_id)
     return session.exec(statement).first()
+
+
+def convert_to_seconds(race_time: str):
+    c = [60, 1]
+    race_time = re.sub("[a-zA-z]", "", race_time)
+    t = race_time.split(":")
+    return sum([np.prod(lst) for lst in zip(c, t)])
