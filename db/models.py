@@ -56,9 +56,9 @@ class MeetBase(SQLModel):
     name: str
     venue: str
     address: Optional[str]
-    city: str
-    state: str
-    zipcode: int
+    city: Optional[str]
+    state: Optional[str]
+    zipcode: Optional[int]
     date: date
 
 
