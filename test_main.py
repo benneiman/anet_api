@@ -39,6 +39,18 @@ def test_create_team(client: TestClient):
     assert data["id"] is not None
 
 
+def test_create_team_duplicate(session: Session, client: TestClient):
+    data = {"anet_id": 123, "name": "New Team"}
+    team = Team(**data)
+
+    session.add(team)
+    session.commit()
+
+    response = client.post("/team/addTeam", json=data)
+
+    assert response.status_code == 400
+
+
 def test_create_athlete(client: TestClient):
     response = client.post(
         "/athlete/addAthlete",
@@ -60,6 +72,24 @@ def test_create_athlete(client: TestClient):
     assert data["gender"] == "F"
     assert data["age"] is None
     assert data["id"] is not None
+
+
+def test_create_athlete_duplicate(session: Session, client: TestClient):
+    data = {
+        "anet_id": 1234,
+        "first_name": "John",
+        "last_name": "Doe",
+        "gender": "F",
+        "age": None,
+    }
+
+    athlete = Athlete(**data)
+    session.add(athlete)
+    session.commit()
+
+    response = client.post("/athlete/addAthlete", json=data)
+
+    assert response.status_code == 400
 
 
 def test_create_meet(client: TestClient):
