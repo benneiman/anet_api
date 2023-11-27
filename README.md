@@ -18,3 +18,8 @@ Finally start the app:
 > uvicorn main:app --reload
 ```
 and try it out!
+
+To run tests:
+```
+> pytest
+```
