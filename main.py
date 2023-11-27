@@ -95,7 +95,7 @@ async def team_info(team_id: int, sport: str, season: int):
             "address": meet["StreetAddress"],
             "city": meet["City"],
             "state": meet["State"],
-            "zipcode": meet["PostalCode"],
+            "zipcode": None if meet["PostalCode"] == "" else meet["PostalCode"],
             # "location": meet["Location"],
             "date": datetime.strptime(meet["StartDate"], "%Y-%m-%dT%H:%M:%S").date(),
         }
