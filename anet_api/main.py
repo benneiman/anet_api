@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException, Depends
 
 from sqlmodel import Session
-from db import (
+from anet_api.db import (
     TeamRead,
     TeamCreate,
     AthleteRead,
@@ -17,8 +17,8 @@ from db import (
     MeetCreate,
 )
 
-from db.database import SessionLocal
-from db.utils import (
+from anet_api.db.database import SessionLocal
+from anet_api.db.utils import (
     create_team,
     create_athlete,
     create_meet,

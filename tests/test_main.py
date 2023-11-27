@@ -3,8 +3,8 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from main import app, get_db
-from db import Team, Athlete, Meet
+from anet_api.main import app, get_db
+from anet_api.db import Team, Athlete, Meet
 
 
 @pytest.fixture(name="session")
