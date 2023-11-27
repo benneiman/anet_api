@@ -1,0 +1,129 @@
+import pytest
+from fastapi.testclient import TestClient
+from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel.pool import StaticPool
+
+from main import app, get_db
+from db import Team, Athlete, Meet
+
+
+@pytest.fixture(name="session")
+def session_fixture():
+    engine = create_engine(
+        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        yield session
+
+
+@pytest.fixture(name="client")
+def client_fixture(session: Session):
+    def get_session_override():
+        return session
+
+    app.dependency_overrides[get_db] = get_session_override
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
+
+
+def test_create_team(client: TestClient):
+    response = client.post("/team/addTeam", json={"anet_id": 493, "name": "Garfield"})
+
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["anet_id"] == 493
+    assert data["name"] == "Garfield"
+    assert data["id"] is not None
+
+
+def test_create_athlete(client: TestClient):
+    response = client.post(
+        "/athlete/addAthlete",
+        json={
+            "anet_id": 1234,
+            "first_name": "John",
+            "last_name": "Doe",
+            "gender": "F",
+            "age": None,
+        },
+    )
+
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["anet_id"] == 1234
+    assert data["first_name"] == "John"
+    assert data["last_name"] == "Doe"
+    assert data["gender"] == "F"
+    assert data["age"] is None
+    assert data["id"] is not None
+
+
+def test_create_meet(client: TestClient):
+    response = client.post(
+        "/meet/addMeet",
+        json={
+            "anet_id": 4321,
+            "name": "League Meet #1",
+            "venue": "Echo Park",
+            "address": "123 America St",
+            "city": "Seattle",
+            "state": "OR",
+            "zipcode": 10001,
+            "date": "2023-11-27",
+        },
+    )
+
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["anet_id"] == 4321
+    assert data["name"] == "League Meet #1"
+    assert data["venue"] == "Echo Park"
+    assert data["address"] == "123 America St"
+    assert data["city"] == "Seattle"
+    assert data["state"] == "OR"
+    assert data["zipcode"] == 10001
+    assert data["id"] is not None
+
+
+def test_create_result(session: Session, client: TestClient):
+    team = Team(anet_id=111, name="New Team")
+    athlete = Athlete(anet_id=222, first_name="John", last_name="Doe", gender="F")
+    meet = Meet(anet_id=333, name="New Meet", venue="Place", date="2023-01-01")
+
+    session.add(team)
+    session.add(athlete)
+    session.add(meet)
+    session.commit()
+    response = client.post(
+        "/meet/addResult",
+        json={
+            "anet_id": 5678,
+            "distance": None,
+            "place": 1,
+            "pb": True,
+            "sb": True,
+            "anet_athlete_id": 222,
+            "anet_team_id": 111,
+            "anet_meet_id": 333,
+            "result": "20:00",
+        },
+    )
+
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["anet_id"] == 5678
+    assert data["distance"] == None
+    assert data["place"] == 1
+    assert data["pb"] == True
+    assert data["sb"] == True
+    assert data["athlete_id"] == 1
+    assert data["team_id"] == 1
+    assert data["meet_id"] == 1
+    assert data["result"] == 1200.0
+    assert data["id"] is not None

@@ -10,6 +10,7 @@ sqlmodel = "*"
 psycopg2 = "*"
 alembic = "*"
 numpy = "*"
+pytest = "*"
 
 [dev-packages]
 jupyterlab = "*"
