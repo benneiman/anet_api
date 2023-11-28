@@ -51,6 +51,14 @@ def test_create_team_duplicate(session: Session, client: TestClient):
     assert response.status_code == 400
 
 
+def test_create_team_invalid(session: Session, client: TestClient):
+    data = {"anet_id": 123, "name": None}
+
+    response = client.post("/team/addTeam", json=data)
+
+    assert response.status_code == 422
+
+
 def test_create_athlete(client: TestClient):
     response = client.post(
         "/athlete/addAthlete",
@@ -92,6 +100,20 @@ def test_create_athlete_duplicate(session: Session, client: TestClient):
     assert response.status_code == 400
 
 
+def test_create_athlete_invalid(session: Session, client: TestClient):
+    data = {
+        "anet_id": None,
+        "first_name": "John",
+        "last_name": "Doe",
+        "gender": "F",
+        "age": None,
+    }
+
+    response = client.post("/athlete/addAthlete", json=data)
+
+    assert response.status_code == 422
+
+
 def test_create_meet(client: TestClient):
     response = client.post(
         "/meet/addMeet",
@@ -118,6 +140,27 @@ def test_create_meet(client: TestClient):
     assert data["state"] == "OR"
     assert data["zipcode"] == 10001
     assert data["id"] is not None
+
+
+def test_create_meet_duplicate(session: Session, client: TestClient):
+    data = {
+        "anet_id": 4321,
+        "name": "League Meet #1",
+        "venue": "Echo Park",
+        "address": "123 America St",
+        "city": "Seattle",
+        "state": "OR",
+        "zipcode": 10001,
+        "date": "2023-11-27",
+    }
+
+    meet = Meet(**data)
+    session.add(meet)
+    session.commit()
+
+    response = client.post("/meet/addMeet", json=data)
+
+    assert response.status_code == 400
 
 
 def test_create_result(session: Session, client: TestClient):
