@@ -46,11 +46,7 @@ async def root():
 
 
 @app.get("/team/getInfo")
-async def team_info(team_id: int, sport: str, season: int):
-    if sport not in ("xc", "tfo", "tfi"):
-        raise HTTPException(
-            status_code=400, detail=f"Bad request: {sport} not a valid option"
-        )
+async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
         f"{anet_url}/api/{version}/TeamNav/Team",
