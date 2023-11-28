@@ -60,8 +60,7 @@ async def team_info(team_id: int, sport: str, season: int):
         dict(teamId=team_id, sport=sport, season=season),
     )
     anettokens = team_core.json()["jwtTeamHome"]
-    referer_url = f"https://www.athletic.net/team/{team_id}/cross-country/{season}"
-    headers = {"referer": referer_url, "anettokens": anettokens}
+    headers = {"anettokens": anettokens}
     roster = requests.get(
         f"{anet_url}/api/{version}/TeamHome/GetAthletes",
         headers=headers,
