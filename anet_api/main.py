@@ -38,6 +38,7 @@ app = FastAPI()
 # TODO: store these as environment variables
 anet_url = "https://www.athletic.net"
 version = "v1"
+api_url = f"{anet_url}/api/{version}"
 
 
 @app.get("/")
@@ -49,18 +50,21 @@ async def root():
 async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
-        f"{anet_url}/api/{version}/TeamNav/Team",
+        api_url + "/TeamNav/Team",
         params=dict(team=team_id, sport=td_sport, season=season),
     )
 
+    if team_data.status_code == 500:
+        raise HTTPException(status_code=404, detail="Team does not exist")
+
     team_core = requests.get(
-        f"{anet_url}/api/{version}/TeamHome/GetTeamCore",
+        api_url + "/TeamHome/GetTeamCore",
         dict(teamId=team_id, sport=sport, season=season),
     )
     anettokens = team_core.json()["jwtTeamHome"]
     headers = {"anettokens": anettokens}
     roster = requests.get(
-        f"{anet_url}/api/{version}/TeamHome/GetAthletes",
+        api_url + "/TeamHome/GetAthletes",
         headers=headers,
         params=dict(seasonID=season),
     )
@@ -77,7 +81,7 @@ async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"
     team_info = team_data.json()["team"]
 
     schedule = requests.get(
-        f"{anet_url}/api/{version}/TeamHomeCal/GetCalendar",
+        api_url + "/TeamHomeCal/GetCalendar",
         headers=headers,
         params=dict(seasonID=season),
     )
@@ -90,7 +94,6 @@ async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"
             "city": meet["City"],
             "state": meet["State"],
             "zipcode": None if meet["PostalCode"] == "" else meet["PostalCode"],
-            # "location": meet["Location"],
             "date": datetime.strptime(meet["StartDate"], "%Y-%m-%dT%H:%M:%S").date(),
         }
         for meet in schedule.json()
@@ -136,23 +139,19 @@ async def get_meet_schedule(
         location=location,
     )
 
-    events = requests.post(f"{anet_url}/api/{version}/Event/Events", json=payload)
+    events = requests.post(api_url + "/Event/Events", json=payload)
     return events.json()
 
 
 @app.get("/meet/getResults")
-async def get_meet_results(meet_id: int, sport: str):
-    if sport not in ("xc", "tf"):
-        raise HTTPException(
-            status_code=400, detail=f"Bad request: {sport} not a valid option"
-        )
+async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
     params = dict(meetId=meet_id, sport=sport)
-    meet = requests.get(f"{anet_url}/api/{version}/Meet/GetMeetData", params=params)
-
-    if status := meet.status_code != 200:
-        raise HTTPException(status_code=status, detail="Try again")
+    meet = requests.get(api_url + "/Meet/GetMeetData", params=params)
 
     meet_payload = meet.json()
+
+    if not meet_payload:
+        raise HTTPException(status_code=404, detail="Meet does not exist")
 
     meet_data = {
         "meet": {
@@ -167,7 +166,7 @@ async def get_meet_results(meet_id: int, sport: str):
     }
 
     results = requests.get(
-        f"{anet_url}/api/{version}/Meet/GetAllResultsData",
+        api_url + "/Meet/GetAllResultsData",
         headers=dict(
             anettokens=meet_payload["jwtMeet"],
         ),
@@ -261,9 +260,7 @@ async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
 @app.get("/athlete/getRaces")
 async def get_race_history(athlete_id: int, sport: str, level: int = 4):
     params = dict(athleteId=athlete_id, sport=sport, level=level)
-    request = requests.get(
-        f"{anet_url}/api/{version}/AthleteBio/GetAthleteBioData", params=params
-    )
+    request = requests.get(api_url + "/AthleteBio/GetAthleteBioData", params=params)
 
     result_key = "results" + str.upper(sport)
 
@@ -312,7 +309,5 @@ async def get_search_results(query: str):
     Wrapper for
     """
     params = dict(q=query)
-    request = requests.get(
-        f"{anet_url}/api/{version}/AutoComplete/search", params=params
-    )
+    request = requests.get(api_url + "/AutoComplete/search", params=params)
     return request.json()
