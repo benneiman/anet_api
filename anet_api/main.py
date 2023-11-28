@@ -17,7 +17,7 @@ from anet_api.db import (
     MeetCreate,
 )
 
-from anet_api.db.database import SessionLocal
+from anet_api.db.database import SessionLocal, get_db
 from anet_api.db.utils import (
     create_team,
     create_athlete,
@@ -33,12 +33,9 @@ from anet_api.db.utils import (
 app = FastAPI()
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# TODO: store these as environment variables
+anet_url = "https://www.athletic.net"
+version = "v1"
 
 
 @app.get("/")
@@ -54,19 +51,19 @@ async def team_info(team_id: int, sport: str, season: int):
         )
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
-        "https://www.athletic.net/api/v1/TeamNav/Team",
+        f"{anet_url}/api/{version}/TeamNav/Team",
         params=dict(team=team_id, sport=td_sport, season=season),
     )
 
     team_core = requests.get(
-        "https://www.athletic.net/api/v1/TeamHome/GetTeamCore",
+        f"{anet_url}/api/{version}/TeamHome/GetTeamCore",
         dict(teamId=team_id, sport=sport, season=season),
     )
     anettokens = team_core.json()["jwtTeamHome"]
     referer_url = f"https://www.athletic.net/team/{team_id}/cross-country/{season}"
     headers = {"referer": referer_url, "anettokens": anettokens}
     roster = requests.get(
-        "https://www.athletic.net/api/v1/TeamHome/GetAthletes",
+        f"{anet_url}/api/{version}/TeamHome/GetAthletes",
         headers=headers,
         params=dict(seasonID=season),
     )
@@ -83,7 +80,7 @@ async def team_info(team_id: int, sport: str, season: int):
     team_info = team_data.json()["team"]
 
     schedule = requests.get(
-        "https://www.athletic.net/api/v1/TeamHomeCal/GetCalendar",
+        f"{anet_url}/api/{version}/TeamHomeCal/GetCalendar",
         headers=headers,
         params=dict(seasonID=season),
     )
@@ -128,9 +125,10 @@ async def get_meet_results(meet_id: int, sport: str):
             status_code=400, detail=f"Bad request: {sport} not a valid option"
         )
     params = dict(meetId=meet_id, sport=sport)
-    meet = requests.get(
-        "https://www.athletic.net/api/v1/Meet/GetMeetData", params=params
-    )
+    meet = requests.get(f"{anet_url}/api/{version}/Meet/GetMeetData", params=params)
+
+    if status := meet.status_code != 200:
+        raise HTTPException(status_code=status, detail="Try again")
 
     meet_payload = meet.json()
 
@@ -147,9 +145,8 @@ async def get_meet_results(meet_id: int, sport: str):
     }
 
     results = requests.get(
-        "https://www.athletic.net/api/v1/Meet/GetAllResultsData",
+        f"{anet_url}/api/{version}/Meet/GetAllResultsData",
         headers=dict(
-            referer="https://www.athletic.net/CrossCountry/meet/225886/results/all",
             anettokens=meet_payload["jwtMeet"],
         ),
     )
@@ -243,7 +240,7 @@ async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
 async def get_race_history(athlete_id: int, sport: str, level: int = 4):
     params = dict(athleteId=athlete_id, sport=sport, level=level)
     request = requests.get(
-        "https://www.athletic.net/api/v1/AthleteBio/GetAthleteBioData", params=params
+        f"{anet_url}/api/{version}/AthleteBio/GetAthleteBioData", params=params
     )
 
     result_key = "results" + str.upper(sport)
@@ -267,6 +264,8 @@ async def get_race_history(athlete_id: int, sport: str, level: int = 4):
     athlete_output = {
         "anet_athleteid": athlete["IDAthlete"],
         "anet_schoolid": athlete["SchoolID"],
+        "first_name": athlete["FirstName"],
+        "last_name": athlete["LastName"],
         "gender": athlete["Gender"],
         "age": athlete["age"],
         "races": results_output,
@@ -292,6 +291,6 @@ async def get_search_results(query: str):
     """
     params = dict(q=query)
     request = requests.get(
-        "https://www.athletic.net/api/v1/AutoComplete/search", params=params
+        f"{anet_url}/api/{version}/AutoComplete/search", params=params
     )
     return request.json()
