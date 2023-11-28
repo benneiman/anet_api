@@ -49,8 +49,8 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/team/getInfo", response_model=TeamInfoRead)
-async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
+@app.get("/team/getInfo", response_model=TeamInfoRead, tags=["team"])
+async def get_team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
         api_url + "/TeamNav/Team",
@@ -114,7 +114,7 @@ async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"
     return team
 
 
-@app.post("/team/addTeam", response_model=TeamRead)
+@app.post("/team/addTeam", response_model=TeamRead, tags=["team"])
 async def add_team(team: TeamCreate, session: Session = Depends(get_db)):
     team_check = get_team_by_anet_id(session, anet_id=team.anet_id)
     if team_check:
@@ -122,7 +122,7 @@ async def add_team(team: TeamCreate, session: Session = Depends(get_db)):
     return create_team(session, team)
 
 
-@app.get("/meet/getSchedule")
+@app.get("/meet/getSchedule", tags=["meet"])
 async def get_meet_schedule(
     start_date: str,
     end_date: str,
@@ -147,7 +147,7 @@ async def get_meet_schedule(
     return events.json()
 
 
-@app.get("/meet/getResults")
+@app.get("/meet/getResults", tags=["meet"])
 async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
     params = dict(meetId=meet_id, sport=sport)
     meet = requests.get(api_url + "/Meet/GetMeetData", params=params)
@@ -218,7 +218,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
     return meet_data
 
 
-@app.post("/meet/addResult", response_model=ResultRead)
+@app.post("/meet/addResult", response_model=ResultRead, tags=["meet"])
 async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
     result_check = get_result_by_anet_id(session, anet_id=result.anet_id)
     if result_check:
@@ -253,7 +253,7 @@ async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
     return create_result(session, post_result)
 
 
-@app.post("/meet/addMeet", response_model=MeetRead)
+@app.post("/meet/addMeet", response_model=MeetRead, tags=["meet"])
 async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
     meet_check = get_meet_by_anet_id(session, anet_id=meet.anet_id)
     if meet_check:
@@ -261,7 +261,7 @@ async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
     return create_meet(session, meet)
 
 
-@app.get("/athlete/getRaces")
+@app.get("/athlete/getRaces", tags=["athlete"])
 async def get_race_history(
     athlete_id: int, sport: Literal["xc", "tf"] = "xc", level: int = 4
 ):
@@ -301,7 +301,7 @@ async def get_race_history(
     return athlete_output
 
 
-@app.post("/athlete/addAthlete", response_model=AthleteRead)
+@app.post("/athlete/addAthlete", response_model=AthleteRead, tags=["athlete"])
 def add_athlete(athlete: AthleteCreate, session: Session = Depends(get_db)):
     athlete_check = get_athlete_by_anet_id(session, anet_id=athlete.anet_id)
     if athlete_check:
@@ -309,7 +309,7 @@ def add_athlete(athlete: AthleteCreate, session: Session = Depends(get_db)):
     return create_athlete(session, athlete)
 
 
-@app.get("/search/getResults")
+@app.get("/search/getResults", tags=["search"])
 async def get_search_results(query: str):
     """Search API
     Wrapper for
