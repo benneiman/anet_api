@@ -1,8 +1,10 @@
 import requests
 
-from datetime import datetime
+from datetime import datetime, date
 
 from fastapi import FastAPI, HTTPException, Depends
+
+from typing import Optional, Literal
 
 from sqlmodel import Session
 from anet_api.db import (
@@ -115,6 +117,31 @@ async def add_team(team: TeamCreate, session: Session = Depends(get_db)):
     if team_check:
         raise HTTPException(status_code=400, detail="Team already exists")
     return create_team(session, team)
+
+
+@app.get("/meet/getSchedule")
+async def get_meet_schedule(
+    start_date: str,
+    end_date: str,
+    state: str,
+    country: str = "us",
+    level: Optional[int] = 4,
+    sport: Literal["xc", "tf", "all"] = "all",
+    location: Optional[str] = None,
+):
+    sport_mask = ["all", "tf", "xc"]
+    payload = dict(
+        start=start_date,
+        end=end_date,
+        levelMask=level,
+        sportMask=sport_mask.index(sport),
+        state=state,
+        country=country,
+        location=location,
+    )
+
+    events = requests.post(f"{anet_url}/api/{version}/Event/Events", json=payload)
+    return events.json()
 
 
 @app.get("/meet/getResults")
