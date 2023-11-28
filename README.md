@@ -8,14 +8,15 @@ Assuming you have postgres installed locally, first create the db:
 ```
 Then migrate the schema from inside the pipenv shell:
 ```
-> pipenv shell
-> cd db/
+> poetry install
+> poetry shell
+> cd anet_api/db/
 > alembic upgrade head
 ```
 Finally start the app:
 ```
-> cd ..
-> uvicorn main:app --reload
+> cd ../..
+> uvicorn anet_api.main:app --reload
 ```
 and try it out!
 
