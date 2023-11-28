@@ -7,6 +7,9 @@ from fastapi import FastAPI, HTTPException, Depends
 from typing import Optional, Literal
 
 from sqlmodel import Session
+
+from anet_api.api import RosterInfo, ScheduleInfo, TeamDetails, TeamInfo, TeamInfoRead
+
 from anet_api.db import (
     TeamRead,
     TeamCreate,
@@ -46,7 +49,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/team/getInfo")
+@app.get("/team/getInfo", response_model=TeamInfoRead)
 async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
@@ -69,45 +72,46 @@ async def team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"
         params=dict(seasonID=season),
     )
 
-    roster_output = [
-        {
-            "anet_id": athlete["ID"],
-            "first_name": athlete["Name"].split(" ", 1)[0],
-            "last_name": athlete["Name"].rsplit(" ", 1)[1],
-            "gender": athlete["Gender"],
-        }
-        for athlete in roster.json()
-    ]
     team_info = team_data.json()["team"]
+    team_output = {
+        "name": team_info["Name"],
+        "city": team_info["City"],
+        "state": team_info["State"],
+        "mascot": team_info["Mascot"],
+    }
+
+    team_details = TeamDetails(**team_output)
+
+    team = TeamInfo(team_data=team_details)
+    for athlete in roster.json():
+        roster_spot = RosterInfo(
+            anet_id=athlete["ID"],
+            first_name=athlete["Name"].split(" ", 1)[0],
+            last_name=athlete["Name"].rsplit(" ", 1)[1],
+            gender=athlete["Gender"],
+        )
+        team.roster.append(roster_spot)
 
     schedule = requests.get(
         api_url + "/TeamHomeCal/GetCalendar",
         headers=headers,
         params=dict(seasonID=season),
     )
-    schedule_output = [
-        {
-            "name": meet["Name"],
-            "venue": meet["Location"]["Name"],
-            "anet_id": meet["MeetID"],
-            "address": meet["StreetAddress"],
-            "city": meet["City"],
-            "state": meet["State"],
-            "zipcode": None if meet["PostalCode"] == "" else meet["PostalCode"],
-            "date": datetime.strptime(meet["StartDate"], "%Y-%m-%dT%H:%M:%S").date(),
-        }
-        for meet in schedule.json()
-    ]
-    return {
-        "team_data": {
-            "name": team_info["Name"],
-            "city": team_info["City"],
-            "state": team_info["State"],
-            "mascot": team_info["Mascot"],
-        },
-        "roster": roster_output,
-        "schedule": schedule_output,
-    }
+
+    for meet in schedule.json():
+        meet_info = ScheduleInfo(
+            anet_id=meet["MeetID"],
+            meet=meet["Name"],
+            venue=meet["Location"]["Name"],
+            address=meet["StreetAddress"],
+            city=meet["City"],
+            state=meet["State"],
+            zipcode=None if meet["PostalCode"] == "" else meet["PostalCode"],
+            date=datetime.strptime(meet["StartDate"], "%Y-%m-%dT%H:%M:%S").date(),
+        )
+        team.schedule.append(meet_info)
+
+    return team
 
 
 @app.post("/team/addTeam", response_model=TeamRead)
@@ -258,7 +262,9 @@ async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
 
 
 @app.get("/athlete/getRaces")
-async def get_race_history(athlete_id: int, sport: str, level: int = 4):
+async def get_race_history(
+    athlete_id: int, sport: Literal["xc", "tf"] = "xc", level: int = 4
+):
     params = dict(athleteId=athlete_id, sport=sport, level=level)
     request = requests.get(api_url + "/AthleteBio/GetAthleteBioData", params=params)
 
