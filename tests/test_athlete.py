@@ -3,6 +3,23 @@ from sqlmodel import Session
 
 from anet_api.db import Athlete
 
+from tests.data import race_history
+
+
+def test_get_race_history(client: TestClient):
+    params = dict(athlete_id=5, sport="xc", level=4)
+    response = client.get("/athlete/getRaces", params=params)
+
+    assert response.status_code == 200
+    assert response.json() == race_history
+
+
+def get_race_history_invalid(client: TestClient):
+    params = dict(athlete_id=21133877, sport="abc", level=4)
+    response = client.get("/athlete/getRaces", params=params)
+
+    assert response.status_code == 422
+
 
 def test_create_athlete_duplicate(session: Session, client: TestClient):
     data = {

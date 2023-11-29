@@ -7,7 +7,7 @@ from datetime import datetime
 from sqlmodel import Session
 
 from typing import Literal
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 
 from anet_api.api import RosterInfo, ScheduleInfo, TeamDetails, TeamInfo, TeamInfoRead
 from anet_api.db import (
@@ -26,15 +26,16 @@ router = APIRouter(prefix="/team", tags=["team"])
 
 
 @router.get("/getInfo", response_model=TeamInfoRead)
-async def get_team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
+async def get_team_info(
+    season: int,
+    sport: Literal["xc", "tfo", "tfi"] = "xc",
+    team_id: int = Query(None, gt=0),
+):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
         API_URL + "/TeamNav/Team",
         params=dict(team=team_id, sport=td_sport, season=season),
     )
-
-    if team_data.status_code == 500:
-        raise HTTPException(status_code=404, detail="Team does not exist")
 
     team_core = requests.get(
         API_URL + "/TeamHome/GetTeamCore",

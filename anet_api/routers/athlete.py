@@ -2,7 +2,7 @@ import requests
 
 from . import API_URL
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 
 from typing import Literal
 
@@ -19,47 +19,50 @@ from anet_api.db.utils import (
     get_athlete_by_anet_id,
 )
 
+from anet_api.api import AthleteInfoRead, AthleteInfo, AthleteDetails, ResultInfo
+
 router = APIRouter(prefix="/athlete", tags=["athlete"])
 
 
-@router.get("/getRaces")
+@router.get("/getRaces", response_model=AthleteInfoRead)
 async def get_race_history(
-    athlete_id: int, sport: Literal["xc", "tf"] = "xc", level: int = 4
+    athlete_id: int = Query(None, gt=0),
+    sport: Literal["xc", "tf"] = "xc",
+    level: int = 4,
 ):
     params = dict(athleteId=athlete_id, sport=sport, level=level)
-    request = requests.get(API_URL + "/AthleteBio/GetAthleteBioData", params=params)
+    response = requests.get(API_URL + "/AthleteBio/GetAthleteBioData", params=params)
 
     result_key = "results" + str.upper(sport)
 
-    results = request.json()[result_key]
+    results = response.json()[result_key]
 
-    results_output = [
-        {
-            "anet_resultid": race["IDResult"],
-            "anet_meetid": race["MeetID"],
-            "result": race["Result"],
-            "distance": race["Distance"],
-            "place": race["Place"],
-            "pb": race["PersonalBest"],
-            "sb": race["SeasonBest"],
-        }
-        for race in results
-    ]
-
-    athlete = request.json()["athlete"]
+    athlete = response.json()["athlete"]
     athlete_output = {
-        "anet_athleteid": athlete["IDAthlete"],
-        "anet_schoolid": athlete["SchoolID"],
+        "anet_id": athlete["IDAthlete"],
+        "anet_team_id": athlete["SchoolID"],
         "first_name": athlete["FirstName"],
         "last_name": athlete["LastName"],
         "gender": athlete["Gender"],
         "age": athlete["age"],
-        "races": results_output,
     }
+    athlete_details = AthleteDetails(**athlete_output)
+    athlete_info = AthleteInfo(athlete_data=athlete_details)
 
-    # TODO: handle eventsTF dict for track results
+    for result in results:
+        result_info = ResultInfo(
+            anet_id=result["IDResult"],
+            anet_meet_id=result["MeetID"],
+            anet_athlete_id=athlete_id,
+            result=result["Result"],
+            distance=result["Distance"],
+            place=result["Place"],
+            pb=result["PersonalBest"],
+            sb=result["SeasonBest"],
+        )
+        athlete_info.races.append(result_info)
 
-    return athlete_output
+    return athlete_info
 
 
 @router.post("/addAthlete", response_model=AthleteRead)

@@ -30,10 +30,43 @@ class TeamDetails(BaseModel):
 
 
 class TeamInfo(BaseModel):
-    team_data: dict
+    team_data: TeamDetails
     roster: List[RosterInfo] = list()
     schedule: List[ScheduleInfo] = list()
 
 
 class TeamInfoRead(TeamInfo):
+    pass
+
+
+class ResultInfo(BaseModel):
+    anet_id: int
+    anet_meet_id: Optional[int]
+    anet_team_id: Optional[int]
+    anet_athlete_id: Optional[int]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    team: Optional[str]
+    grade: Optional[int]
+    result: str
+    place: Optional[int]
+    pb: Optional[bool]
+    sb: Optional[bool]
+
+
+class AthleteDetails(BaseModel):
+    anet_id: int
+    anet_team_id: Optional[int]
+    first_name: str
+    last_name: str
+    gender: Optional[Literal["M", "F"]]
+    age: Optional[int]
+
+
+class AthleteInfo(BaseModel):
+    athlete_data: AthleteDetails
+    races: List[ResultInfo] = list()
+
+
+class AthleteInfoRead(AthleteInfo):
     pass
