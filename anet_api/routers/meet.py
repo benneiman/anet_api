@@ -126,7 +126,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
     return meet_data
 
 
-@router.post("/meet/addResult", response_model=ResultRead)
+@router.post("/addResult", response_model=ResultRead)
 async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
     result_check = get_result_by_anet_id(session, anet_id=result.anet_id)
     if result_check:

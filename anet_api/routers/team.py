@@ -25,7 +25,7 @@ from anet_api.db.utils import (
 router = APIRouter(prefix="/team", tags=["team"])
 
 
-@router.get("/teamInfo", response_model=TeamInfoRead)
+@router.get("/getInfo", response_model=TeamInfoRead)
 async def get_team_info(team_id: int, season: int, sport: Literal["xc", "tfo", "tfi"]):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
