@@ -27,6 +27,16 @@ from anet_api.db.utils import (
     convert_to_seconds,
 )
 
+from anet_api.api import (
+    TeamScoreInfo,
+    MeetDetails,
+    MeetResultsInfo,
+    MeetResultsInfoRead,
+    ResultInfo,
+    RaceDetails,
+    RaceInfo,
+)
+
 router = APIRouter(prefix="/meet", tags=["meet"])
 
 
@@ -55,75 +65,89 @@ async def get_meet_schedule(
     return events.json()
 
 
-@router.get("/getResults")
+@router.get("/getResults", response_model=MeetResultsInfoRead)
 async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
     params = dict(meetId=meet_id, sport=sport)
-    meet = requests.get(API_URL + "/Meet/GetMeetData", params=params)
+    response = requests.get(API_URL + "/Meet/GetMeetData", params=params)
 
-    meet_payload = meet.json()
+    meet = response.json()
 
-    if not meet_payload:
+    if not meet:
         raise HTTPException(status_code=404, detail="Meet does not exist")
 
-    meet_data = {
-        "meet": {
-            "anet_meet_id": meet_id,
-            "location": meet_payload["meet"]["Location"]["Name"],
-            "address": meet_payload["meet"]["Location"]["Address"],
-            "city": meet_payload["meet"]["Location"]["City"],
-            "state": meet_payload["meet"]["Location"]["State"],
-            "zipcode": meet_payload["meet"]["Location"]["PostalCode"],
-        },
-        "races": [],
+    meet_output = {
+        "anet_meet_id": meet_id,
+        "location": meet["meet"]["Location"]["Name"],
+        "address": meet["meet"]["Location"]["Address"],
+        "city": meet["meet"]["Location"]["City"],
+        "state": meet["meet"]["Location"]["State"],
+        "zipcode": meet["meet"]["Location"]["PostalCode"],
     }
+    meet_details = MeetDetails(**meet_output)
+    meet_results_info = MeetResultsInfo(meet_details=meet_details)
+    # meet_data = {
+    #     "meet": {
+    #         "anet_meet_id": meet_id,
+    #         "location": meet["meet"]["Location"]["Name"],
+    #         "address": meet["meet"]["Location"]["Address"],
+    #         "city": meet["meet"]["Location"]["City"],
+    #         "state": meet["meet"]["Location"]["State"],
+    #         "zipcode": meet["meet"]["Location"]["PostalCode"],
+    #     },
+    #     "races": [],
+    # }
 
     results = requests.get(
         API_URL + "/Meet/GetAllResultsData",
         headers=dict(
-            anettokens=meet_payload["jwtMeet"],
+            anettokens=meet["jwtMeet"],
         ),
     )
+    race_team_scores = list()
+    for team_score in results.json()["teamScores"]:
+        team_score_info = TeamScoreInfo(
+            anet_team_id=team_score["SchoolID"],
+            team=team_score["Name"],
+            points=team_score["Points"],
+            place=team_score["Place"],
+        )
+        race_team_scores.append((team_score["DivisionID"], team_score_info))
 
     for race in results.json()["flatEvents"]:
-        race_details = {
-            "race_id": race["IDMeetDiv"],
-            "gender": race["Gender"],
-            "race_name": race["DivName"],
-            "division": race["Division"],
-            "place_depth": race["PlaceDepth"],
-            "score_depth": race["ScoreDepth"],
-            "start_time": race["RaceTime"],
-            "results": [],
-            "team_scores": [],
-        }
+        race_details = RaceDetails(
+            anet_race_id=race["IDMeetDiv"],
+            gender=race["Gender"],
+            race_name=race["DivName"],
+            division=race["Division"],
+            place_depth=race["PlaceDepth"],
+            score_depth=race["ScoreDepth"],
+            start_time=race["RaceTime"],
+        )
+        race_info = RaceInfo(race_details=race_details)
         for finisher in race["results"]:
-            finisher_details = {
-                "anet_id": finisher["IDResult"],
-                "anet_meet_id": meet_id,
-                "anet_athlete_id": finisher["AthleteID"],
-                "first_name": finisher["FirstName"],
-                "last_name": finisher["LastName"],
-                "anet_team_id": finisher["TeamID"],
-                "team": finisher["SchoolName"],
-                "grade": finisher["AgeGrade"],
-                "result": finisher["Result"],
-                "place": finisher["Place"],
-                "pb": finisher["pr"],
-                "sb": finisher["sr"],
-            }
-            race_details["results"].append(finisher_details)
-        meet_data["races"].append(race_details)
+            result_info = ResultInfo(
+                anet_id=finisher["IDResult"],
+                anet_meet_id=meet_id,
+                anet_athlete_id=finisher["AthleteID"],
+                anet_team_id=finisher["TeamID"],
+                first_name=finisher["FirstName"],
+                last_name=finisher["LastName"],
+                team=finisher["SchoolName"],
+                grade=finisher["AgeGrade"],
+                result=finisher["Result"],
+                place=finisher["Place"],
+                pb=finisher["pr"],
+                sb=finisher["sr"],
+            )
+            race_info.results.append(result_info)
 
-        for team_score in results.json()["teamScores"]:
-            score_copy = team_score.copy()
-            for race in meet_data["races"]:
-                if team_score["DivisionID"] == race["race_id"]:
-                    score_copy.pop("DivisionID")
-                    score_copy.pop("rawName")
-                    score_copy.pop("Gender")
-                    race["team_scores"].append(score_copy)
+        for race_id, team_score in race_team_scores:
+            if race_id == race_details.anet_race_id:
+                race_info.team_scores.append(team_score)
 
-    return meet_data
+        meet_results_info.races.append(race_info)
+
+    return meet_results_info
 
 
 @router.post("/addResult", response_model=ResultRead)

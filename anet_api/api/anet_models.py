@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Literal, Optional
-from datetime import date
+from datetime import date, datetime
 
 
 class ScheduleInfo(BaseModel):
@@ -69,4 +69,45 @@ class AthleteInfo(BaseModel):
 
 
 class AthleteInfoRead(AthleteInfo):
+    pass
+
+
+class MeetDetails(BaseModel):
+    anet_meet_id: int
+    location: Optional[str]
+    address: Optional[str]
+    city: Optional[str]
+    state: Optional[str]
+    zipcode: Optional[int]
+
+
+class TeamScoreInfo(BaseModel):
+    place: Optional[int]
+    anet_team_id: Optional[int]
+    team: Optional[str]
+    points: Optional[int]
+
+
+class RaceDetails(BaseModel):
+    anet_race_id: int
+    gender: Optional[Literal["M", "F"]]
+    race_name: Optional[str]
+    division: Optional[str]
+    place_depth: Optional[int]
+    score_depth: Optional[int]
+    start_time: Optional[datetime]
+
+
+class RaceInfo(BaseModel):
+    race_details: RaceDetails
+    results: List[ResultInfo] = list()
+    team_scores: List[TeamScoreInfo] = list()
+
+
+class MeetResultsInfo(BaseModel):
+    meet_details: MeetDetails
+    races: List[RaceInfo] = list()
+
+
+class MeetResultsInfoRead(MeetResultsInfo):
     pass

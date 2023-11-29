@@ -3,6 +3,8 @@ from sqlmodel import Session
 
 from anet_api.db import Team, Athlete, Meet
 
+from tests.data import meet_results
+
 
 def test_create_meet(client: TestClient):
     response = client.post(
@@ -90,3 +92,25 @@ def test_create_result(session: Session, client: TestClient):
     assert data["meet_id"] == 1
     assert data["result"] == 1200.0
     assert data["id"] is not None
+
+
+def test_get_meet_results(client: TestClient):
+    params = dict(meet_id=221788, sport="xc")
+    response = client.get("/meet/getResults", params=params)
+
+    assert response.status_code == 200
+    assert response.json() == meet_results
+
+
+def test_get_meet_results_invalid(client: TestClient):
+    params = dict(meet_id=221788, sport="abc")
+    response = client.get("/meet/getResults", params=params)
+
+    assert response.status_code == 422
+
+
+def test_get_meet_results_404(client: TestClient):
+    params = dict(meet_id=0, sport="xc")
+    response = client.get("/meet/getResults", params=params)
+
+    assert response.status_code == 404

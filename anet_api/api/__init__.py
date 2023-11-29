@@ -8,4 +8,10 @@ from .anet_models import (
     AthleteDetails,
     AthleteInfo,
     AthleteInfoRead,
+    MeetDetails,
+    MeetResultsInfo,
+    MeetResultsInfoRead,
+    TeamScoreInfo,
+    RaceDetails,
+    RaceInfo,
 )
