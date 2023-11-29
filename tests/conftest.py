@@ -3,7 +3,9 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from anet_api.main import app, get_db
+from anet_api.main import app
+from anet_api.routers import team, meet, search, athlete
+from anet_api.db.database import get_db
 
 
 @pytest.fixture(name="session")
