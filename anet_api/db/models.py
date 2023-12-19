@@ -1,4 +1,5 @@
 from typing import Optional, List
+from datetime import datetime
 
 from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy.types import Double
@@ -8,7 +9,12 @@ from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
 from datetime import date, time
 
 
-class AthleteBase(SQLModel):
+class AbstractBase(SQLModel):
+    created_at: datetime = Field(default=datetime.utcnow(), nullable=False)
+    last_edited: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
+
+class AthleteBase(AbstractBase):
     anet_id: int
     first_name: str
     last_name: str
@@ -37,7 +43,7 @@ class AthleteUpdate(AthleteBase):
     age: Optional[int]
 
 
-class TeamBase(SQLModel):
+class TeamBase(AbstractBase):
     anet_id: int
     name: str
 
@@ -54,7 +60,7 @@ class TeamRead(TeamBase):
     id: int
 
 
-class MeetBase(SQLModel):
+class MeetBase(AbstractBase):
     anet_id: int
     name: str
     venue: str
@@ -77,7 +83,7 @@ class MeetRead(MeetBase):
     id: int
 
 
-class ResultBase(SQLModel):
+class ResultBase(AbstractBase):
     anet_id: int
     distance: Optional[int]
     place: Optional[int]
