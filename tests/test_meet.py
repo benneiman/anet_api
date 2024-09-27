@@ -11,7 +11,7 @@ def test_create_meet(client: TestClient):
         "/meet/addMeet",
         json={
             "anet_id": 4321,
-            "name": "League Meet #1",
+            "meet": "League Meet #1",
             "venue": "Echo Park",
             "address": "123 America St",
             "city": "Seattle",
@@ -25,7 +25,7 @@ def test_create_meet(client: TestClient):
 
     assert response.status_code == 200
     assert data["anet_id"] == 4321
-    assert data["name"] == "League Meet #1"
+    assert data["meet"] == "League Meet #1"
     assert data["venue"] == "Echo Park"
     assert data["address"] == "123 America St"
     assert data["city"] == "Seattle"
@@ -37,7 +37,7 @@ def test_create_meet(client: TestClient):
 def test_create_meet_duplicate(session: Session, client: TestClient):
     data = {
         "anet_id": 4321,
-        "name": "League Meet #1",
+        "meet": "League Meet #1",
         "venue": "Echo Park",
         "address": "123 America St",
         "city": "Seattle",
@@ -58,7 +58,7 @@ def test_create_meet_duplicate(session: Session, client: TestClient):
 def test_create_result(session: Session, client: TestClient):
     team = Team(anet_id=111, name="New Team")
     athlete = Athlete(anet_id=222, first_name="John", last_name="Doe", gender="F")
-    meet = Meet(anet_id=333, name="New Meet", venue="Place", date="2023-01-01")
+    meet = Meet(anet_id=333, meet="New Meet", venue="Place", date="2023-01-01")
 
     session.add(team)
     session.add(athlete)
@@ -95,7 +95,7 @@ def test_create_result(session: Session, client: TestClient):
 
 
 def test_get_meet_results(client: TestClient):
-    params = dict(meet_id=221788, sport="xc")
+    params = dict(meet_id=131325, sport="xc")
     response = client.get("/meet/getResults", params=params)
 
     assert response.status_code == 200

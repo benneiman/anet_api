@@ -47,7 +47,7 @@ class ResultInfo(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     team: Optional[str]
-    grade: Optional[int]
+    grade: Optional[str]
     result: str
     place: Optional[int]
     pb: Optional[bool]

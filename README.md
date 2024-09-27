@@ -6,7 +6,7 @@ Assuming you have postgres installed locally, first create the db:
 ```
 > createdb anet_results
 ```
-Then migrate the schema from inside the pipenv shell:
+Then migrate the schema from inside the poetry shell:
 ```
 > poetry install
 > poetry shell

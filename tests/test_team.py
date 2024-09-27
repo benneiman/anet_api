@@ -7,7 +7,7 @@ from tests.data import team_info
 
 
 def test_get_team_info(client: TestClient):
-    params = dict(team_id=1, sport="xc", season=2023)
+    params = dict(team_id=9352, sport="xc", season=2020)
     response = client.get("/team/getInfo", params=params)
 
     assert response.status_code == 200
