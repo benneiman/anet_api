@@ -3,7 +3,7 @@ from sqlmodel import Session
 
 from anet_api.db import Team, Athlete, Meet
 
-from tests.data import meet_results
+from tests.data import meet_results, schedule
 
 
 def test_create_meet(client: TestClient):
@@ -114,3 +114,30 @@ def test_get_meet_results_404(client: TestClient):
     response = client.get("/meet/getResults", params=params)
 
     assert response.status_code == 404
+
+def test_get_schedule(client: TestClient):
+    params = dict(
+        start_date='2019-09-05',
+        end_date='2019-09-08',
+        level=4,
+        sport='xc',
+        state='WA',
+        country='us',
+    )
+    response = client.get("/meet/getSchedule",params=params)
+
+    assert response.status_code == 200
+    assert response.json() == schedule
+
+def test_get_schedule_invalid(client: TestClient):
+    params = dict(
+        start='invalid input',
+        end='2019-09-08',
+        levelMask=4,
+        sportMask=2,
+        state='WA',
+        country='us',
+    )
+    response = client.get("/meet/getSchedule",params=params)
+    
+    assert response.status_code == 422
