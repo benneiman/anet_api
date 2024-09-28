@@ -51,6 +51,7 @@ async def get_team_info(
 
     team_info = team_data.json()["team"]
     team_output = {
+        "anet_id": team_id,
         "name": team_info["Name"],
         "city": team_info["City"],
         "state": team_info["State"],

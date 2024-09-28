@@ -35,6 +35,7 @@ from anet_api.api import (
     ResultInfo,
     RaceDetails,
     RaceInfo,
+    TeamDetails,
 )
 
 router = APIRouter(prefix="/meet", tags=["meet"])
@@ -81,21 +82,26 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
         "address": meet["meet"]["Location"]["Address"],
         "city": meet["meet"]["Location"]["City"],
         "state": meet["meet"]["Location"]["State"],
-        "zipcode": meet["meet"]["Location"]["PostalCode"],
+        "zipcode": (
+            None
+            if meet["meet"]["Location"]["PostalCode"] == ""
+            else meet["meet"]["Location"]["PostalCode"]
+        ),
     }
     meet_details = MeetDetails(**meet_output)
-    meet_results_info = MeetResultsInfo(meet_details=meet_details)
-    # meet_data = {
-    #     "meet": {
-    #         "anet_meet_id": meet_id,
-    #         "location": meet["meet"]["Location"]["Name"],
-    #         "address": meet["meet"]["Location"]["Address"],
-    #         "city": meet["meet"]["Location"]["City"],
-    #         "state": meet["meet"]["Location"]["State"],
-    #         "zipcode": meet["meet"]["Location"]["PostalCode"],
-    #     },
-    #     "races": [],
-    # }
+
+    teams = requests.get(
+        API_URL + "/Meet/GetTeams", headers=dict(anettokens=meet["jwtMeet"])
+    )
+
+    team_list = list()
+    for team in teams.json():
+        team_detail = TeamDetails(
+            name=team["SchoolName"], anet_id=team["TeamID"], state=team["StateCode"]
+        )
+        team_list.append(team_detail)
+
+    meet_results_info = MeetResultsInfo(meet_details=meet_details, teams=team_list)
 
     results = requests.get(
         API_URL + "/Meet/GetAllResultsData",

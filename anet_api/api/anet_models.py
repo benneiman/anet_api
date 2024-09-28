@@ -23,6 +23,7 @@ class RosterInfo(BaseModel):
 
 
 class TeamDetails(BaseModel):
+    anet_id: int
     name: Optional[str]
     city: Optional[str]
     state: Optional[str]
@@ -106,6 +107,7 @@ class RaceInfo(BaseModel):
 
 class MeetResultsInfo(BaseModel):
     meet_details: MeetDetails
+    teams: List[TeamDetails]
     races: List[RaceInfo] = list()
 
 

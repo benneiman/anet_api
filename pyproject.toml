@@ -15,6 +15,7 @@ fastapi = {version = "0.99.1", extras = ["all"]}
 sqlmodel = "^0.0.12"
 pytest = "^7.4.3"
 mangum = "^0.17.0"
+black = "^24.8.0"
 
 [tool.poetry.group.dev.dependencies]
 psycopg2 = "^2.9.9"

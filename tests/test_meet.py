@@ -95,7 +95,7 @@ def test_create_result(session: Session, client: TestClient):
 
 
 def test_get_meet_results(client: TestClient):
-    params = dict(meet_id=131325, sport="xc")
+    params = dict(meet_id=243490, sport="xc")
     response = client.get("/meet/getResults", params=params)
 
     assert response.status_code == 200
