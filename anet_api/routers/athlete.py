@@ -19,7 +19,7 @@ from anet_api.db.utils import (
     get_athlete_by_anet_id,
 )
 
-from anet_api.api import AthleteInfoRead, AthleteInfo, AthleteDetails, ResultInfo
+from anet_api.anet import AthleteInfoRead, AthleteInfo, AthleteDetails, ResultInfo
 
 router = APIRouter(prefix="/athlete", tags=["athlete"])
 

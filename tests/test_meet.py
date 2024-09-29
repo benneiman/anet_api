@@ -2,8 +2,12 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from anet_api.db import Team, Athlete, Meet
+from anet_api.constants import ANET_PREFIX, GET_RESULTS, GET_SCHEDULE
 
 from tests.data import meet_results, schedule
+
+get_results_endpoint = ANET_PREFIX + GET_RESULTS
+get_schedule_endpoint = ANET_PREFIX + GET_SCHEDULE
 
 
 ############################
@@ -102,7 +106,7 @@ def test_create_result(session: Session, client: TestClient):
 #########################
 def test_get_meet_results(client: TestClient):
     params = dict(meet_id=161636, sport="xc")
-    response = client.get("/meet/getResults", params=params)
+    response = client.get(get_results_endpoint, params=params)
 
     assert response.status_code == 200
     assert response.json()["meet_details"] == meet_results["meet_details"]
@@ -112,14 +116,14 @@ def test_get_meet_results(client: TestClient):
 
 def test_get_meet_results_invalid(client: TestClient):
     params = dict(meet_id=221788, sport="abc")
-    response = client.get("/meet/getResults", params=params)
+    response = client.get(get_results_endpoint, params=params)
 
     assert response.status_code == 422
 
 
 def test_get_meet_results_404(client: TestClient):
     params = dict(meet_id=0, sport="xc")
-    response = client.get("/meet/getResults", params=params)
+    response = client.get(get_results_endpoint, params=params)
 
     assert response.status_code == 404
 
@@ -133,7 +137,7 @@ def test_get_schedule(client: TestClient):
         state="WA",
         country="us",
     )
-    response = client.get("/meet/getSchedule", params=params)
+    response = client.get(get_schedule_endpoint, params=params)
 
     assert response.status_code == 200
     assert response.json() == schedule
@@ -148,6 +152,6 @@ def test_get_schedule_invalid(client: TestClient):
         state="WA",
         country="us",
     )
-    response = client.get("/meet/getSchedule", params=params)
+    response = client.get(get_schedule_endpoint, params=params)
 
     assert response.status_code == 422

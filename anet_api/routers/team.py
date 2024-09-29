@@ -9,7 +9,7 @@ from sqlmodel import Session
 from typing import Literal
 from fastapi import APIRouter, HTTPException, Depends, Query
 
-from anet_api.api import RosterInfo, ScheduleInfo, TeamDetails, TeamInfo, TeamInfoRead
+from anet_api.anet import RosterInfo, ScheduleInfo, TeamDetails, TeamInfo, TeamInfoRead
 from anet_api.db import (
     TeamRead,
     TeamCreate,

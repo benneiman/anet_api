@@ -27,7 +27,7 @@ from anet_api.db.utils import (
     convert_to_seconds,
 )
 
-from anet_api.api import (
+from anet_api.anet import (
     TeamScoreInfo,
     MeetDetails,
     MeetResultsInfo,

@@ -2,13 +2,16 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from anet_api.db import Team
+from anet_api.constants import ANET_PREFIX, GET_TEAM
 
 from tests.data import team_info
+
+get_team_endpoint = ANET_PREFIX + GET_TEAM
 
 
 def test_get_team_info(client: TestClient):
     params = dict(team_id=9352, sport="xc", season=2020)
-    response = client.get("/team/getInfo", params=params)
+    response = client.get(get_team_endpoint, params=params)
 
     assert response.status_code == 200
     assert response.json() == team_info
@@ -16,7 +19,7 @@ def test_get_team_info(client: TestClient):
 
 def test_get_team_info_invalid(client: TestClient):
     params = dict(team_id=493, sport="abc", season=2023)
-    response = client.get("/team/getInfo", params=params)
+    response = client.get(get_team_endpoint, params=params)
 
     assert response.status_code == 422
 

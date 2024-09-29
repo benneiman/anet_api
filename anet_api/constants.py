@@ -1,0 +1,16 @@
+ANET_URL = "https://www.athletic.net"
+VERSION = "v1"
+API_URL = f"{ANET_URL}/api/{VERSION}"
+MEET = "meet"
+SEARCH = "search"
+TEAM = "team"
+ATHLETE = "athlete"
+
+# Endpoint constants
+ANET_PREFIX = "/anet"
+GET_TEAM = "/getTeam"
+GET_MEET = "/getMeet"
+GET_RESULTS = "/getResults"
+GET_SCHEDULE = "/getSchedule"
+GET_RACES = "/getRaces"
+GET_SEARCH = "/getSearch"
