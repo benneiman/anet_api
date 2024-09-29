@@ -53,6 +53,7 @@ class ResultInfo(BaseModel):
     place: Optional[int]
     pb: Optional[bool]
     sb: Optional[bool]
+    distance: Optional[int]
 
 
 class AthleteDetails(BaseModel):
