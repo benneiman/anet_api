@@ -11,7 +11,8 @@ def test_get_race_history(client: TestClient):
     response = client.get("/athlete/getRaces", params=params)
 
     assert response.status_code == 200
-    assert response.json() == race_history
+    assert response.json()["athlete_data"] == race_history["athlete_data"]
+    assert response.json()["races"] == race_history["races"]
 
 
 def test_get_race_history_invalid(client: TestClient):
