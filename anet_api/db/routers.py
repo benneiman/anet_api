@@ -1,9 +1,7 @@
 from sqlmodel import Session
 
-from typing import Literal
 from fastapi import APIRouter, HTTPException, Depends, Query
 
-from anet_api.anet import RosterInfo, ScheduleInfo, TeamDetails, TeamInfo, TeamInfoRead
 from anet_api.db import (
     TeamRead,
     TeamCreate,
@@ -12,6 +10,8 @@ from anet_api.db import (
     ResultRead,
     ResultCreate,
     Result,
+    MeetRead,
+    MeetCreate,
 )
 from anet_api.constants import (
     DB,
@@ -22,6 +22,7 @@ from anet_api.constants import (
     ATHLETE,
     POST_RESULT,
     MEET,
+    POST_MEET,
 )
 
 from anet_api.db.database import get_db
@@ -50,14 +51,14 @@ async def add_team(team: TeamCreate, session: Session = Depends(get_db)):
 
 
 @router.post(POST_ATHLETE, response_model=AthleteRead, tags=[ATHLETE])
-def add_athlete(athlete: AthleteCreate, session: Session = Depends(get_db)):
+async def add_athlete(athlete: AthleteCreate, session: Session = Depends(get_db)):
     athlete_check = get_athlete_by_anet_id(session, anet_id=athlete.anet_id)
     if athlete_check:
         raise HTTPException(status_code=400, detail="Athlete already exists")
     return create_athlete(session, athlete)
 
 
-@router.post(POST_RESULT, response_model=ResultRead)
+@router.post(POST_RESULT, response_model=ResultRead, tags=[MEET])
 async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
     result_check = get_result_by_anet_id(session, anet_id=result.anet_id)
     if result_check:
@@ -90,3 +91,11 @@ async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
     post_result.place = result.place
 
     return create_result(session, post_result)
+
+
+@router.post(POST_MEET, response_model=MeetRead, tags=[MEET])
+async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
+    meet_check = get_meet_by_anet_id(session, anet_id=meet.anet_id)
+    if meet_check:
+        raise HTTPException(status_code=400, detail="Meet already exists")
+    return create_meet(session, meet)
