@@ -2,11 +2,13 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from anet_api.db import Team
-from anet_api.constants import ANET_PREFIX, GET_TEAM
+from anet_api.constants import ANET_PREFIX, GET_TEAM, DB_PREFIX, POST_TEAM
 
 from tests.data import team_info
 
 get_team_endpoint = ANET_PREFIX + GET_TEAM
+
+post_team_endpoint = DB_PREFIX + POST_TEAM
 
 
 def test_get_team_info(client: TestClient):
@@ -25,7 +27,9 @@ def test_get_team_info_invalid(client: TestClient):
 
 
 def test_create_team(client: TestClient):
-    response = client.post("/team/addTeam", json={"anet_id": 493, "name": "Garfield"})
+    response = client.post(
+        post_team_endpoint, json={"anet_id": 493, "name": "Garfield"}
+    )
 
     data = response.json()
 
@@ -42,7 +46,7 @@ def test_create_team_duplicate(session: Session, client: TestClient):
     session.add(team)
     session.commit()
 
-    response = client.post("/team/addTeam", json=data)
+    response = client.post(post_team_endpoint, json=data)
 
     assert response.status_code == 400
 
@@ -50,6 +54,6 @@ def test_create_team_duplicate(session: Session, client: TestClient):
 def test_create_team_invalid(session: Session, client: TestClient):
     data = {"anet_id": 123, "name": None}
 
-    response = client.post("/team/addTeam", json=data)
+    response = client.post(post_team_endpoint, json=data)
 
     assert response.status_code == 422

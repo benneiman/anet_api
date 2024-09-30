@@ -8,6 +8,7 @@ from anet_api.constants import (
     GET_SCHEDULE,
     DB_PREFIX,
     POST_RESULT,
+    POST_MEET,
 )
 
 from tests.data import meet_results, schedule
@@ -16,6 +17,7 @@ get_results_endpoint = ANET_PREFIX + GET_RESULTS
 get_schedule_endpoint = ANET_PREFIX + GET_SCHEDULE
 
 post_result_endpoint = DB_PREFIX + POST_RESULT
+post_meet_endpoint = DB_PREFIX + POST_MEET
 
 
 ############################
@@ -23,7 +25,7 @@ post_result_endpoint = DB_PREFIX + POST_RESULT
 ############################
 def test_create_meet(client: TestClient):
     response = client.post(
-        "/meet/addMeet",
+        post_meet_endpoint,
         json={
             "anet_id": 4321,
             "meet": "League Meet #1",
@@ -65,7 +67,7 @@ def test_create_meet_duplicate(session: Session, client: TestClient):
     session.add(meet)
     session.commit()
 
-    response = client.post("/meet/addMeet", json=data)
+    response = client.post(post_meet_endpoint, json=data)
 
     assert response.status_code == 400
 

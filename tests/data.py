@@ -1,28 +1,29 @@
 race_history = {
-    "athlete_data": {
-        "anet_id": 5,
-        "anet_team_id": 1,
-        "first_name": "Alex",
-        "last_name": "Skrove",
-        "gender": "M",
-        "age": None,
-    },
-    "races": [
-        {
-            "anet_id": 1994294,
-            "anet_meet_id": 3839,
-            "anet_team_id": None,
-            "anet_athlete_id": 5,
-            "first_name": None,
-            "last_name": None,
-            "team": None,
-            "grade": None,
-            "result": "18:29",
-            "place": 48,
-            "pb": True,
-            "sb": True,
-        }
-    ],
+  "athlete_data": {
+    "anet_id": 5,
+    "anet_team_id": 1,
+    "first_name": "Alex",
+    "last_name": "Skrove",
+    "gender": "M",
+    "age": None
+  },
+  "races": [
+    {
+      "anet_id": 1994294,
+      "anet_meet_id": 3839,
+      "anet_team_id": None,
+      "anet_athlete_id": 5,
+      "first_name": None,
+      "last_name": None,
+      "team": None,
+      "grade": None,
+      "result": "18:29",
+      "place": 48,
+      "pb": True,
+      "sb": True,
+      "distance": 5000
+    }
+  ]
 }
 
 team_info = {
@@ -284,7 +285,8 @@ meet_results ={
           "result": "10:39",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180619,
@@ -298,7 +300,8 @@ meet_results ={
           "result": "10:56",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180617,
@@ -312,7 +315,8 @@ meet_results ={
           "result": "11:09",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180621,
@@ -326,7 +330,8 @@ meet_results ={
           "result": "11:10",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180632,
@@ -340,7 +345,8 @@ meet_results ={
           "result": "11:11",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180616,
@@ -354,7 +360,8 @@ meet_results ={
           "result": "11:14",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180627,
@@ -368,7 +375,8 @@ meet_results ={
           "result": "11:17",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181021,
@@ -382,7 +390,8 @@ meet_results ={
           "result": "11:38",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181019,
@@ -396,7 +405,8 @@ meet_results ={
           "result": "11:40",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180630,
@@ -410,7 +420,8 @@ meet_results ={
           "result": "12:38",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180625,
@@ -424,7 +435,8 @@ meet_results ={
           "result": "12:40",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181805,
@@ -438,7 +450,8 @@ meet_results ={
           "result": "12:46",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180631,
@@ -452,7 +465,8 @@ meet_results ={
           "result": "13:07",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181024,
@@ -466,7 +480,8 @@ meet_results ={
           "result": "13:40",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180628,
@@ -480,7 +495,8 @@ meet_results ={
           "result": "14:26",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180620,
@@ -494,7 +510,8 @@ meet_results ={
           "result": "14:30",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180618,
@@ -508,7 +525,8 @@ meet_results ={
           "result": "14:32",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180626,
@@ -522,7 +540,8 @@ meet_results ={
           "result": "14:42",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180629,
@@ -536,7 +555,8 @@ meet_results ={
           "result": "15:04",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181023,
@@ -550,7 +570,8 @@ meet_results ={
           "result": "15:05",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180623,
@@ -564,7 +585,8 @@ meet_results ={
           "result": "15:43",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180633,
@@ -578,7 +600,8 @@ meet_results ={
           "result": "16:57",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181020,
@@ -592,7 +615,8 @@ meet_results ={
           "result": "16:57",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29180624,
@@ -606,7 +630,8 @@ meet_results ={
           "result": "18:23",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29181022,
@@ -620,7 +645,8 @@ meet_results ={
           "result": "21:12",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         }
       ],
       "team_scores": []
@@ -648,7 +674,8 @@ meet_results ={
           "result": "13:01",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185802,
@@ -662,7 +689,8 @@ meet_results ={
           "result": "13:02",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185803,
@@ -676,7 +704,8 @@ meet_results ={
           "result": "13:40",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185805,
@@ -690,7 +719,8 @@ meet_results ={
           "result": "14:13",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185806,
@@ -704,7 +734,8 @@ meet_results ={
           "result": "14:15",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185817,
@@ -718,7 +749,8 @@ meet_results ={
           "result": "14:50",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185810,
@@ -732,7 +764,8 @@ meet_results ={
           "result": "15:11",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185819,
@@ -746,7 +779,8 @@ meet_results ={
           "result": "15:49",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185815,
@@ -760,7 +794,8 @@ meet_results ={
           "result": "15:51",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185808,
@@ -774,7 +809,8 @@ meet_results ={
           "result": "15:55",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185816,
@@ -788,7 +824,8 @@ meet_results ={
           "result": "17:00",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185814,
@@ -802,7 +839,8 @@ meet_results ={
           "result": "17:10",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185809,
@@ -816,7 +854,8 @@ meet_results ={
           "result": "19:22",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185818,
@@ -830,7 +869,8 @@ meet_results ={
           "result": "19:52",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185813,
@@ -844,7 +884,8 @@ meet_results ={
           "result": "21:00",
           "place": 0,
           "pb": False,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185811,
@@ -858,7 +899,8 @@ meet_results ={
           "result": "21:11",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185804,
@@ -872,7 +914,8 @@ meet_results ={
           "result": "22:00",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         },
         {
           "anet_id": 29185812,
@@ -886,7 +929,8 @@ meet_results ={
           "result": "22:13",
           "place": 0,
           "pb": True,
-          "sb": True
+          "sb": True,
+          "distance": None
         }
       ],
       "team_scores": []
