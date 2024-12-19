@@ -44,17 +44,20 @@ class TeamInfoRead(TeamInfo):
 class ResultInfo(BaseModel):
     anet_id: int
     anet_meet_id: Optional[int]
-    anet_team_id: Optional[int]
     anet_athlete_id: Optional[int]
-    first_name: Optional[str]
-    last_name: Optional[str]
-    team: Optional[str]
-    grade: Optional[str]
     result: str
     place: Optional[int]
     pb: Optional[bool]
     sb: Optional[bool]
     distance: Optional[int]
+
+
+class ResultInfoExtended(ResultInfo):
+    anet_team_id: Optional[int]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    team: Optional[str]
+    grade: Optional[str]
 
 
 class AthleteDetails(BaseModel):

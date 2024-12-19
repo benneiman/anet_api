@@ -11,11 +11,14 @@ python = "^3.10"
 alembic = "^1.12.1"
 numpy = "^1.26.2"
 requests = "^2.31.0"
-fastapi = {version = "0.99.1", extras = ["all"]}
-sqlmodel = "^0.0.12"
+fastapi = "^0.115.6"
+sqlmodel = "^0.0.22"
 pytest = "^7.4.3"
 mangum = "^0.17.0"
 black = "^24.8.0"
+pydantic = "^2.10.4"
+httpx = "^0.28.1"
+pytest-postgresql = "^6.1.1"
 
 [tool.poetry.group.dev.dependencies]
 psycopg2 = "^2.9.9"

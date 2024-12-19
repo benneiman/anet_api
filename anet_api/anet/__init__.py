@@ -5,6 +5,7 @@ from .models import (
     TeamInfo,
     TeamInfoRead,
     ResultInfo,
+    ResultInfoExtended,
     AthleteDetails,
     AthleteInfo,
     AthleteInfoRead,
