@@ -28,6 +28,7 @@ from anet_api.anet import (
     RaceDetails,
     RaceInfo,
     ResultInfo,
+    ResultInfoExtended,
     RosterInfo,
     ScheduleInfo,
     TeamDetails,
@@ -84,6 +85,7 @@ async def get_team_info(
             first_name=athlete["Name"].split(" ", 1)[0],
             last_name=athlete["Name"].rsplit(" ", 1)[1],
             gender=athlete["Gender"],
+            age=None,
         )
         team.roster.append(roster_spot)
 
@@ -168,7 +170,14 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
 
     team_list = list()
     for team in teams.json():
-        team_detail = TeamDetails(name=team["SchoolName"], anet_id=team["IDSchool"])
+        team_detail = TeamDetails(
+            name=team["SchoolName"],
+            anet_id=team["IDSchool"],
+            city=None,
+            state=None,
+            mascot=None,
+            season=None,
+        )
         team_list.append(team_detail)
 
     meet_results_info = MeetResultsInfo(meet_details=meet_details, teams=team_list)
@@ -201,7 +210,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
         )
         race_info = RaceInfo(race_details=race_details)
         for finisher in race["results"]:
-            result_info = ResultInfo(
+            result_info = ResultInfoExtended(
                 anet_id=finisher["IDResult"],
                 anet_meet_id=meet_id,
                 anet_athlete_id=finisher["AthleteID"],
@@ -214,6 +223,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
                 place=finisher["Place"],
                 pb=finisher["pr"],
                 sb=finisher["sr"],
+                distance=None,
             )
             race_info.results.append(result_info)
 

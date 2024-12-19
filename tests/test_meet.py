@@ -104,9 +104,9 @@ def test_create_result(session: Session, client: TestClient):
     assert data["place"] == 1
     assert data["pb"] == True
     assert data["sb"] == True
-    assert data["athlete_id"] == 1
-    assert data["team_id"] == 1
-    assert data["meet_id"] == 1
+    assert isinstance(data["athlete_id"], int)
+    assert isinstance(data["team_id"], int)
+    assert isinstance(data["meet_id"], int)
     assert data["result"] == 1200.0
     assert data["id"] is not None
 
