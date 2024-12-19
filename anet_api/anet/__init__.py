@@ -1,4 +1,4 @@
-from .anet_models import (
+from .models import (
     RosterInfo,
     ScheduleInfo,
     TeamDetails,
