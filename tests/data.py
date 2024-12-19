@@ -11,12 +11,7 @@ race_history = {
         {
             "anet_id": 1994294,
             "anet_meet_id": 3839,
-            "anet_team_id": None,
             "anet_athlete_id": 5,
-            "first_name": None,
-            "last_name": None,
-            "team": None,
-            "grade": None,
             "result": "18:29",
             "place": 48,
             "pb": True,

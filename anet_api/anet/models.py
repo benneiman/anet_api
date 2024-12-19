@@ -106,7 +106,7 @@ class RaceDetails(BaseModel):
 
 class RaceInfo(BaseModel):
     race_details: RaceDetails
-    results: List[ResultInfo] = list()
+    results: List[ResultInfoExtended] = list()
     team_scores: List[TeamScoreInfo] = list()
 
 

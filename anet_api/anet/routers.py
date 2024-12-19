@@ -223,6 +223,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
                 place=finisher["Place"],
                 pb=finisher["pr"],
                 sb=finisher["sr"],
+                distance=None,
             )
             race_info.results.append(result_info)
 
