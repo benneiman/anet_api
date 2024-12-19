@@ -20,9 +20,9 @@ pydantic = "^2.10.4"
 httpx = "^0.28.1"
 pytest-postgresql = "^6.1.1"
 uvicorn = "^0.34.0"
+psycopg2 = "^2.9.10"
 
 [tool.poetry.group.dev.dependencies]
-psycopg2 = "^2.9.9"
 jupyterlab = "^4.0.9"
 
 [build-system]
