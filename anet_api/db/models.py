@@ -3,7 +3,6 @@ from datetime import datetime
 
 from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy.types import Double
-from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
 
 
 from datetime import date, time
@@ -26,14 +25,15 @@ class Athlete(AthleteBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
 
+# results: list["Result"] = Relationship(back_populates="athlete")
+
+
 class AthleteCreate(AthleteBase):
     pass
 
 
 class AthleteRead(AthleteBase):
     id: int
-
-    # results: List["Result"] = Relationship(back_populates="athlete")
 
 
 class AthleteUpdate(AthleteBase):
@@ -96,7 +96,7 @@ class Result(ResultBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     athlete_id: Optional[int] = Field(default=None, foreign_key="athlete.id")
-    # athlete: Optional[Athlete] = Relationship(back_populates="results")
+    # athlete: Athlete | None = Relationship(back_populates="results")
 
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     meet_id: Optional[int] = Field(default=None, foreign_key="meet.id")
