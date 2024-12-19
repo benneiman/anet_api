@@ -72,6 +72,7 @@ async def get_team_info(
         "city": team_info["City"],
         "state": team_info["State"],
         "mascot": team_info["Mascot"],
+        "season": season,
     }
 
     team_details = TeamDetails(**team_output)
@@ -97,10 +98,14 @@ async def get_team_info(
             anet_id=meet["MeetID"],
             meet=meet["Name"],
             venue=meet["Location"]["Name"],
-            address=meet["StreetAddress"],
-            city=meet["City"],
-            state=meet["State"],
-            zipcode=None if meet["PostalCode"] == "" else meet["PostalCode"],
+            address=meet["Location"]["Address"],
+            city=meet["Location"]["City"],
+            state=meet["Location"]["State"],
+            zipcode=(
+                None
+                if meet["Location"]["PostalCode"] == ""
+                else meet["Location"]["PostalCode"]
+            ),
             date=datetime.strptime(meet["StartDate"], "%Y-%m-%dT%H:%M:%S").date(),
         )
         team.schedule.append(meet_info)
@@ -163,9 +168,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
 
     team_list = list()
     for team in teams.json():
-        team_detail = TeamDetails(
-            name=team["SchoolName"], anet_id=team["TeamID"], state=team["StateCode"]
-        )
+        team_detail = TeamDetails(name=team["SchoolName"], anet_id=team["IDSchool"])
         team_list.append(team_detail)
 
     meet_results_info = MeetResultsInfo(meet_details=meet_details, teams=team_list)

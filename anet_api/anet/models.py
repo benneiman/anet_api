@@ -28,6 +28,7 @@ class TeamDetails(BaseModel):
     city: Optional[str]
     state: Optional[str]
     mascot: Optional[str]
+    season: Optional[int]
 
 
 class TeamInfo(BaseModel):
