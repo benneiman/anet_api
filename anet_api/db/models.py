@@ -4,8 +4,9 @@ from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy.types import Double
 
+from starlette.requests import Request
 
-from datetime import date, time
+from datetime import date
 
 
 class AbstractBase(SQLModel):
@@ -24,8 +25,10 @@ class AthleteBase(AbstractBase):
 class Athlete(AthleteBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
+    # results: list["Result"] = Relationship(back_populates="athlete")
 
-# results: list["Result"] = Relationship(back_populates="athlete")
+    async def __admin_repr__(self, request: Request) -> str:
+        return f"{self.first_name} {self.last_name}"
 
 
 class AthleteCreate(AthleteBase):
