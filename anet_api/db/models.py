@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, Literal
 from datetime import datetime
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -83,6 +83,29 @@ class MeetRead(MeetBase):
     id: int
 
 
+class RaceBase(AbstractBase):
+    anet_id: int
+    gender: Optional[str]
+    race_name: Optional[str]
+    division: Optional[str]
+    place_depth: Optional[int]
+    score_depth: Optional[int]
+    start_time: Optional[datetime]
+    distance: Optional[int]
+
+
+class Race(RaceBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class RaceCreate(RaceBase):
+    pass
+
+
+class RaceRead(RaceBase):
+    id: int
+
+
 class ResultBase(AbstractBase):
     anet_id: int
     distance: Optional[int]
@@ -101,11 +124,14 @@ class Result(ResultBase, table=True):
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     meet_id: Optional[int] = Field(default=None, foreign_key="meet.id")
 
+    race_id: Optional[int] = Field(default=None, foreign_key="race.id")
+
 
 class ResultCreate(ResultBase):
     anet_athlete_id: int
     anet_team_id: int
     anet_meet_id: int
+    anet_race_id: int
     result: str
 
 
@@ -115,3 +141,4 @@ class ResultRead(ResultBase):
     team_id: int
     athlete_id: int
     meet_id: int
+    anet_race_id: int
