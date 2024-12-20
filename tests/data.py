@@ -246,7 +246,7 @@ meet_results = {
         "address": "",
         "city": "Seattle",
         "state": "WA",
-        "zipcode": 98103,
+        "zipcode": "98103",
     },
     "teams": [
         {

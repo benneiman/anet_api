@@ -33,7 +33,7 @@ def test_create_meet(client: TestClient):
             "address": "123 America St",
             "city": "Seattle",
             "state": "OR",
-            "zipcode": 10001,
+            "zipcode": "10001",
             "date": "2023-11-27",
         },
     )
@@ -47,7 +47,7 @@ def test_create_meet(client: TestClient):
     assert data["address"] == "123 America St"
     assert data["city"] == "Seattle"
     assert data["state"] == "OR"
-    assert data["zipcode"] == 10001
+    assert data["zipcode"] == "10001"
     assert data["id"] is not None
 
 
@@ -59,7 +59,7 @@ def test_create_meet_duplicate(session: Session, client: TestClient):
         "address": "123 America St",
         "city": "Seattle",
         "state": "OR",
-        "zipcode": 10001,
+        "zipcode": "10001",
         "date": "2023-11-27",
     }
 
