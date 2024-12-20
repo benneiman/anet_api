@@ -52,7 +52,12 @@ def create_result(session: Session, result: ResultCreate):
 def get_object_by_anet_id(
     session: Session, anet_id: int, obj: Athlete | Team | Result | Meet | Race
 ):
-    statement = select(obj).where(obj.anet_id == anet_id)
+    try:
+        statement = select(obj).where(obj.anet_id == anet_id)
+    except:
+        raise TypeError(
+            "Only Athlete, Team, Result, Meet, or Race models can be passed"
+        )
     return session.exec(statement).first()
 
 
