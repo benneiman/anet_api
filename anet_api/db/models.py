@@ -141,4 +141,4 @@ class ResultRead(ResultBase):
     team_id: int
     athlete_id: int
     meet_id: int
-    anet_race_id: int
+    race_id: int
