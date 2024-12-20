@@ -14,4 +14,7 @@ from .models import (
     Race,
     RaceCreate,
     RaceRead,
+    Course,
+    CourseCreate,
+    CourseRead,
 )

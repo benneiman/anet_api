@@ -19,6 +19,9 @@ from anet_api.db import (
     Race,
     RaceRead,
     RaceCreate,
+    Course,
+    CourseRead,
+    CourseCreate,
 )
 from anet_api.constants import (
     DB,
@@ -32,6 +35,8 @@ from anet_api.constants import (
     POST_MEET,
     RACE,
     POST_RACE,
+    COURSE,
+    POST_COURSE,
 )
 
 from anet_api.db.database import get_db
@@ -39,6 +44,8 @@ from anet_api.db.utils import (
     create_item,
     convert_to_seconds,
     get_object_by_anet_id,
+    get_course_by_venue,
+    normalize_venue,
 )
 
 
@@ -67,6 +74,15 @@ async def add_race(race: RaceCreate, session: Session = Depends(get_db)):
     if race_check:
         raise HTTPException(status_code=400, detail="Race already exists")
     return create_item(session, race, Race)
+
+
+@router.post(POST_COURSE, response_model=CourseRead, tags=[COURSE])
+async def add_course(course: CourseCreate, session: Session = Depends(get_db)):
+    course_check = get_course_by_venue(session, course.venue)
+    if course_check:
+        raise HTTPException(status_code=400, detail="Course already exists")
+    course.venue = normalize_venue(course.venue)
+    return create_item(session, course, Course)
 
 
 @router.post(POST_RESULT, response_model=ResultRead, tags=[MEET])

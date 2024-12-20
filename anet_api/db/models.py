@@ -14,6 +14,7 @@ class AbstractBase(SQLModel):
     last_edited: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
 
+# Athlete Models
 class AthleteBase(AbstractBase):
     anet_id: int
     first_name: str
@@ -43,6 +44,7 @@ class AthleteUpdate(AthleteBase):
     age: Optional[int]
 
 
+# Team Models
 class TeamBase(AbstractBase):
     anet_id: int
     name: str
@@ -60,6 +62,7 @@ class TeamRead(TeamBase):
     id: int
 
 
+# Meet Models
 class MeetBase(AbstractBase):
     anet_id: int
     meet: str
@@ -83,6 +86,7 @@ class MeetRead(MeetBase):
     id: int
 
 
+# Race Models
 class RaceBase(AbstractBase):
     anet_id: int
     gender: Optional[str]
@@ -106,6 +110,27 @@ class RaceRead(RaceBase):
     id: int
 
 
+# Course Models
+class CourseBase(AbstractBase):
+    venue: str
+    course_factor: int | None
+
+
+class Course(CourseBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+
+    results: list["Result"] = Relationship(back_populates="course")
+
+
+class CourseCreate(CourseBase):
+    pass
+
+
+class CourseRead(CourseBase):
+    id: int
+
+
+# Result Models
 class ResultBase(AbstractBase):
     anet_id: int
     distance: Optional[int]
@@ -125,6 +150,9 @@ class Result(ResultBase, table=True):
     meet_id: Optional[int] = Field(default=None, foreign_key="meet.id")
 
     race_id: Optional[int] = Field(default=None, foreign_key="race.id")
+
+    course_id: int | None = Field(default=None, foreign_key="course.id")
+    course: Course | None = Relationship(back_populates="results")
 
 
 class ResultCreate(ResultBase):
