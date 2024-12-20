@@ -10,7 +10,7 @@ class ScheduleInfo(BaseModel):
     address: Optional[str]
     city: Optional[str]
     state: Optional[str]
-    zipcode: Optional[int]
+    zipcode: Optional[str]
     date: Optional[date]
 
 
