@@ -173,7 +173,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-09-21",
         },
         {
@@ -183,7 +183,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-09-28",
         },
         {
@@ -193,7 +193,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-10-05",
         },
         {
@@ -203,7 +203,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-10-12",
         },
         {
@@ -213,7 +213,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-10-19",
         },
         {
@@ -223,7 +223,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-10-26",
         },
         {
@@ -233,7 +233,7 @@ team_info = {
             "address": "100 Day Island Rd",
             "city": "Eugene",
             "state": "OR",
-            "zipcode": 97401,
+            "zipcode": "97401",
             "date": "2020-11-02",
         },
     ],
@@ -261,7 +261,7 @@ meet_results = {
     "races": [
         {
             "race_details": {
-                "anet_race_id": 675619,
+                "anet_id": 675619,
                 "gender": "M",
                 "race_name": "2 Miles Varsity",
                 "division": "Varsity",
@@ -651,7 +651,7 @@ meet_results = {
         },
         {
             "race_details": {
-                "anet_race_id": 675692,
+                "anet_id": 675692,
                 "gender": "F",
                 "race_name": "2 Miles Varsity",
                 "division": "Varsity",

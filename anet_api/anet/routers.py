@@ -200,7 +200,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
 
     for race in results.json()["flatEvents"]:
         race_details = RaceDetails(
-            anet_race_id=race["IDMeetDiv"],
+            anet_id=race["IDMeetDiv"],
             gender=race["Gender"],
             race_name=race["DivName"],
             division=race["Division"],
@@ -216,6 +216,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
                 anet_meet_id=meet_id,
                 anet_athlete_id=finisher["AthleteID"],
                 anet_team_id=finisher["TeamID"],
+                anet_race_id=race_details.anet_id,
                 first_name=finisher["FirstName"],
                 last_name=finisher["LastName"],
                 team=finisher["SchoolName"],
@@ -229,7 +230,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
             race_info.results.append(result_info)
 
         for race_id, team_score in race_team_scores:
-            if race_id == race_details.anet_race_id:
+            if race_id == race_details.anet_id:
                 race_info.team_scores.append(team_score)
 
         meet_results_info.races.append(race_info)
