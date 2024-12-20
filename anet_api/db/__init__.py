@@ -11,4 +11,6 @@ from .models import (
     Result,
     ResultRead,
     ResultCreate,
+    Race,
+    RaceCreate,
 )

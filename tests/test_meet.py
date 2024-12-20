@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from anet_api.db import Team, Athlete, Meet
+from anet_api.db import Team, Athlete, Meet, Race
 from anet_api.constants import (
     ANET_PREFIX,
     GET_RESULTS,
@@ -76,10 +76,12 @@ def test_create_result(session: Session, client: TestClient):
     team = Team(anet_id=111, name="New Team")
     athlete = Athlete(anet_id=222, first_name="John", last_name="Doe", gender="F")
     meet = Meet(anet_id=333, meet="New Meet", venue="Place", date="2023-01-01")
+    race = Race(anet_id=444, race_name="Fake Race", gender="M", distance=5000)
 
     session.add(team)
     session.add(athlete)
     session.add(meet)
+    session.add(race)
     session.commit()
     response = client.post(
         post_result_endpoint,
@@ -92,6 +94,7 @@ def test_create_result(session: Session, client: TestClient):
             "anet_athlete_id": 222,
             "anet_team_id": 111,
             "anet_meet_id": 333,
+            "anet_race_id": 444,
             "result": "20:00",
         },
     )

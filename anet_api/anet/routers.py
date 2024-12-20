@@ -207,6 +207,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
             place_depth=race["PlaceDepth"],
             score_depth=race["ScoreDepth"],
             start_time=race["RaceTime"],
+            distance=race["Meters"],
         )
         race_info = RaceInfo(race_details=race_details)
         for finisher in race["results"]:

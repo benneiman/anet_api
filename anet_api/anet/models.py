@@ -102,6 +102,7 @@ class RaceDetails(BaseModel):
     place_depth: Optional[int]
     score_depth: Optional[int]
     start_time: Optional[datetime]
+    distance: Optional[int]
 
 
 class RaceInfo(BaseModel):
