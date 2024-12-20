@@ -54,6 +54,7 @@ class ResultInfo(BaseModel):
 
 class ResultInfoExtended(ResultInfo):
     anet_team_id: Optional[int]
+    anet_race_id: Optional[int]
     first_name: Optional[str]
     last_name: Optional[str]
     team: Optional[str]
