@@ -17,36 +17,16 @@ from . import (
 )
 
 
-def create_team(session: Session, team: TeamCreate):
-    team_item = Team.model_validate(team)
-    session.add(team_item)
+def create_item(
+    session: Session,
+    create_item: TeamCreate | AthleteCreate | MeetCreate | ResultCreate | RaceCreate,
+    model: Team | Athlete | Meet | Result | Race,
+):
+    item = model.model_validate(create_item)
+    session.add(item)
     session.commit()
-    session.refresh(team_item)
-    return team_item
-
-
-def create_athlete(session: Session, athlete: AthleteCreate):
-    athlete_item = Athlete.model_validate(athlete)
-    session.add(athlete_item)
-    session.commit()
-    session.refresh(athlete_item)
-    return athlete_item
-
-
-def create_meet(session: Session, meet: MeetCreate):
-    meet_item = Meet.model_validate(meet)
-    session.add(meet_item)
-    session.commit()
-    session.refresh(meet_item)
-    return meet_item
-
-
-def create_result(session: Session, result: ResultCreate):
-    result_item = Result.model_validate(result)
-    session.add(result_item)
-    session.commit()
-    session.refresh(result_item)
-    return result_item
+    session.refresh(item)
+    return item
 
 
 def get_object_by_anet_id(
@@ -59,14 +39,6 @@ def get_object_by_anet_id(
             "Only Athlete, Team, Result, Meet, or Race models can be passed"
         )
     return session.exec(statement).first()
-
-
-def create_race(session: Session, race: RaceCreate):
-    race_item = Race.model_validate(race)
-    session.add(race_item)
-    session.commit()
-    session.refresh(race_item)
-    return race_item
 
 
 def convert_to_seconds(race_time: str):

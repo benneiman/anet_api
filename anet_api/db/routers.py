@@ -32,10 +32,7 @@ from anet_api.constants import (
 
 from anet_api.db.database import get_db
 from anet_api.db.utils import (
-    create_team,
-    create_athlete,
-    create_result,
-    create_meet,
+    create_item,
     convert_to_seconds,
     get_object_by_anet_id,
 )
@@ -49,7 +46,7 @@ async def add_team(team: TeamCreate, session: Session = Depends(get_db)):
     team_check = get_object_by_anet_id(session, anet_id=team.anet_id, obj=Team)
     if team_check:
         raise HTTPException(status_code=400, detail="Team already exists")
-    return create_team(session, team)
+    return create_item(session, team, Team)
 
 
 @router.post(POST_ATHLETE, response_model=AthleteRead, tags=[ATHLETE])
@@ -57,7 +54,7 @@ async def add_athlete(athlete: AthleteCreate, session: Session = Depends(get_db)
     athlete_check = get_object_by_anet_id(session, anet_id=athlete.anet_id, obj=Athlete)
     if athlete_check:
         raise HTTPException(status_code=400, detail="Athlete already exists")
-    return create_athlete(session, athlete)
+    return create_item(session, athlete, Athlete)
 
 
 @router.post(POST_RESULT, response_model=ResultRead, tags=[MEET])
@@ -100,7 +97,7 @@ async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
     post_result.sb = result.sb
     post_result.place = result.place
 
-    return create_result(session, post_result)
+    return create_item(session, post_result, Result)
 
 
 @router.post(POST_MEET, response_model=MeetRead, tags=[MEET])
@@ -108,4 +105,4 @@ async def add_meet(meet: MeetCreate, session: Session = Depends(get_db)):
     meet_check = get_object_by_anet_id(session, anet_id=meet.anet_id, obj=Meet)
     if meet_check:
         raise HTTPException(status_code=400, detail="Meet already exists")
-    return create_meet(session, meet)
+    return create_item(session, meet, Meet)
