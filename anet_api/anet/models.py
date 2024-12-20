@@ -54,6 +54,7 @@ class ResultInfo(BaseModel):
 
 class ResultInfoExtended(ResultInfo):
     anet_team_id: Optional[int]
+    anet_race_id: Optional[int]
     first_name: Optional[str]
     last_name: Optional[str]
     team: Optional[str]
@@ -95,7 +96,7 @@ class TeamScoreInfo(BaseModel):
 
 
 class RaceDetails(BaseModel):
-    anet_race_id: int
+    anet_id: int
     gender: Optional[Literal["M", "F"]]
     race_name: Optional[str]
     division: Optional[str]
