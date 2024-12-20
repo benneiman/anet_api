@@ -200,7 +200,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
 
     for race in results.json()["flatEvents"]:
         race_details = RaceDetails(
-            anet_race_id=race["IDMeetDiv"],
+            anet_id=race["IDMeetDiv"],
             gender=race["Gender"],
             race_name=race["DivName"],
             division=race["Division"],

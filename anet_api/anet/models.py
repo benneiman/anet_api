@@ -95,7 +95,7 @@ class TeamScoreInfo(BaseModel):
 
 
 class RaceDetails(BaseModel):
-    anet_race_id: int
+    anet_id: int
     gender: Optional[Literal["M", "F"]]
     race_name: Optional[str]
     division: Optional[str]
