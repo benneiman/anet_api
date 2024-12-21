@@ -22,6 +22,10 @@ pytest-postgresql = "^6.1.1"
 uvicorn = "^0.34.0"
 psycopg2 = "^2.9.10"
 python-dotenv = "^1.0.1"
+tornado = "^6.4.2"
+jupyterlab = "^4.3.4"
+setuptools = "^75.6.0"
+urllib3 = "^2.2.3"
 
 [tool.poetry.group.dev.dependencies]
 jupyterlab = "^4.0.9"
