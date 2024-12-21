@@ -78,10 +78,10 @@ async def add_race(race: RaceCreate, session: Session = Depends(get_db)):
 
 @router.post(POST_COURSE, response_model=CourseRead, tags=[COURSE])
 async def add_course(course: CourseCreate, session: Session = Depends(get_db)):
+    course.venue = normalize_venue(course.venue)
     course_check = get_course_by_venue(session, course.venue)
     if course_check:
         raise HTTPException(status_code=400, detail="Course already exists")
-    course.venue = normalize_venue(course.venue)
     return create_item(session, course, Course)
 
 
@@ -113,17 +113,25 @@ async def add_result(result: ResultCreate, session: Session = Depends(get_db)):
         raise HTTPException(
             status_code=400, detail="This race does not exist in the db"
         )
+    result.venue = normalize_venue(result.venue)
+    course = get_course_by_venue(session, venue=result.venue)
+    if not course:
+        raise HTTPException(
+            status_code=400, detail="This course does not exist in the db"
+        )
 
     post_result = Result()
     post_result.team_id = team.id
     post_result.athlete_id = athlete.id
     post_result.meet_id = meet.id
     post_result.race_id = race.id
+    post_result.course_id = course.id
     post_result.result = convert_to_seconds(result.result)
     post_result.anet_id = result.anet_id
     post_result.pb = result.pb
     post_result.sb = result.sb
     post_result.place = result.place
+    print(post_result)
 
     return create_item(session, post_result, Result)
 

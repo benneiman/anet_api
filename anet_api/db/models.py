@@ -117,9 +117,12 @@ class CourseBase(AbstractBase):
 
 
 class Course(CourseBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True)
 
-    results: list["Result"] = Relationship(back_populates="course")
+    # results: list["Result"] = Relationship(
+    #     back_populates="course",
+    #     sa_relationship_kwargs={"lazy": "selectin"},
+    # )
 
 
 class CourseCreate(CourseBase):
@@ -152,7 +155,10 @@ class Result(ResultBase, table=True):
     race_id: Optional[int] = Field(default=None, foreign_key="race.id")
 
     course_id: int | None = Field(default=None, foreign_key="course.id")
-    course: Course | None = Relationship(back_populates="results")
+    # course: Course = Relationship(
+    #     back_populates="results",
+    #     sa_relationship_kwargs={"lazy": "selectin"},
+    # )
 
 
 class ResultCreate(ResultBase):
@@ -160,6 +166,7 @@ class ResultCreate(ResultBase):
     anet_team_id: int
     anet_meet_id: int
     anet_race_id: int
+    venue: str
     result: str
 
 
@@ -170,3 +177,4 @@ class ResultRead(ResultBase):
     athlete_id: int
     meet_id: int
     race_id: int
+    course_id: int

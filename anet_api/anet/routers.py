@@ -152,7 +152,8 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
 
     meet_output = {
         "anet_meet_id": meet_id,
-        "location": meet["meet"]["Location"]["Name"],
+        "meet": meet["meet"]["Name"],
+        "venue": meet["meet"]["Location"]["Name"],
         "address": meet["meet"]["Location"]["Address"],
         "city": meet["meet"]["Location"]["City"],
         "state": meet["meet"]["Location"]["State"],
@@ -226,6 +227,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
                 pb=finisher["pr"],
                 sb=finisher["sr"],
                 distance=None,
+                venue=meet_details.venue,
             )
             race_info.results.append(result_info)
 

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from anet_api.db import Team, Athlete, Meet, Race
+from anet_api.db import Team, Athlete, Meet, Race, Course
 from anet_api.constants import (
     ANET_PREFIX,
     GET_RESULTS,
@@ -77,24 +77,27 @@ def test_create_result(session: Session, client: TestClient):
     athlete = Athlete(anet_id=222, first_name="John", last_name="Doe", gender="F")
     meet = Meet(anet_id=333, meet="New Meet", venue="Place", date="2023-01-01")
     race = Race(anet_id=444, race_name="Fake Race", gender="M", distance=5000)
+    course = Course(venue="fake park", course_factor=100)
 
     session.add(team)
     session.add(athlete)
     session.add(meet)
     session.add(race)
+    session.add(course)
     session.commit()
     response = client.post(
         post_result_endpoint,
         json={
-            "anet_id": 5678,
-            "distance": None,
-            "place": 1,
+            "anet_id": 18,
+            "distance": 0,
+            "place": 0,
             "pb": True,
             "sb": True,
             "anet_athlete_id": 222,
             "anet_team_id": 111,
             "anet_meet_id": 333,
             "anet_race_id": 444,
+            "venue": "fake park",
             "result": "20:00",
         },
     )
@@ -102,14 +105,16 @@ def test_create_result(session: Session, client: TestClient):
     data = response.json()
 
     assert response.status_code == 200
-    assert data["anet_id"] == 5678
+    assert data["anet_id"] == 18
     assert data["distance"] == None
-    assert data["place"] == 1
+    assert data["place"] == 0
     assert data["pb"] == True
     assert data["sb"] == True
     assert isinstance(data["athlete_id"], int)
     assert isinstance(data["team_id"], int)
     assert isinstance(data["meet_id"], int)
+    assert isinstance(data["race_id"], int)
+    assert isinstance(data["course_id"], int)
     assert data["result"] == 1200.0
     assert data["id"] is not None
 
