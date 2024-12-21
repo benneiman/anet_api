@@ -1,6 +1,5 @@
 from .models import (
     RosterInfo,
-    ScheduleInfo,
     TeamDetails,
     TeamInfo,
     TeamInfoRead,

@@ -30,7 +30,6 @@ from anet_api.anet import (
     ResultInfo,
     ResultInfoExtended,
     RosterInfo,
-    ScheduleInfo,
     TeamDetails,
     TeamInfo,
     TeamInfoRead,
@@ -46,7 +45,7 @@ router = APIRouter(prefix=ANET_PREFIX, tags=["anet"])
 async def get_team_info(
     season: int,
     sport: Literal["xc", "tfo", "tfi"] = "xc",
-    team_id: int = Query(None, gt=0),
+    team_id: int = Query(gt=0),
 ):
     td_sport = "tf" if sport == "tfo" else sport
     team_data = requests.get(
@@ -96,7 +95,7 @@ async def get_team_info(
     )
 
     for meet in schedule.json():
-        meet_info = ScheduleInfo(
+        meet_info = MeetDetails(
             anet_id=meet["MeetID"],
             meet=meet["Name"],
             venue=meet["Location"]["Name"],
@@ -151,7 +150,7 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
         raise HTTPException(status_code=404, detail="Meet does not exist")
 
     meet_output = {
-        "anet_meet_id": meet_id,
+        "anet_id": meet_id,
         "meet": meet["meet"]["Name"],
         "venue": meet["meet"]["Location"]["Name"],
         "address": meet["meet"]["Location"]["Address"],
@@ -162,6 +161,9 @@ async def get_meet_results(meet_id: int, sport: Literal["xc", "tf"]):
             if meet["meet"]["Location"]["PostalCode"] == ""
             else meet["meet"]["Location"]["PostalCode"]
         ),
+        "date": datetime.strptime(
+            meet["meet"]["StartDate"], "%Y-%m-%dT%H:%M:%S"
+        ).date(),
     }
     meet_details = MeetDetails(**meet_output)
 
