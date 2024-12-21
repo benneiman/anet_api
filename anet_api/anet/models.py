@@ -4,16 +4,6 @@ from datetime import date, datetime
 
 
 class MeetDetails(BaseModel):
-    anet_meet_id: int
-    meet: str
-    venue: Optional[str]
-    address: Optional[str]
-    city: Optional[str]
-    state: Optional[str]
-    zipcode: Optional[str]
-
-
-class ScheduleInfo(BaseModel):
     anet_id: int
     meet: str
     venue: Optional[str]
@@ -21,7 +11,7 @@ class ScheduleInfo(BaseModel):
     city: Optional[str]
     state: Optional[str]
     zipcode: Optional[str]
-    date: Optional[date]
+    date: date | None
 
 
 class RosterInfo(BaseModel):
@@ -44,7 +34,7 @@ class TeamDetails(BaseModel):
 class TeamInfo(BaseModel):
     team_data: TeamDetails
     roster: List[RosterInfo] = list()
-    schedule: List[ScheduleInfo] = list()
+    schedule: List[MeetDetails] = list()
 
 
 class TeamInfoRead(TeamInfo):
