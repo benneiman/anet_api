@@ -3,6 +3,16 @@ from typing import List, Literal, Optional
 from datetime import date, datetime
 
 
+class MeetDetails(BaseModel):
+    anet_meet_id: int
+    meet: str
+    venue: Optional[str]
+    address: Optional[str]
+    city: Optional[str]
+    state: Optional[str]
+    zipcode: Optional[str]
+
+
 class ScheduleInfo(BaseModel):
     anet_id: int
     meet: str
@@ -59,6 +69,7 @@ class ResultInfoExtended(ResultInfo):
     last_name: Optional[str]
     team: Optional[str]
     grade: Optional[str]
+    venue: str | None
 
 
 class AthleteDetails(BaseModel):
@@ -77,15 +88,6 @@ class AthleteInfo(BaseModel):
 
 class AthleteInfoRead(AthleteInfo):
     pass
-
-
-class MeetDetails(BaseModel):
-    anet_meet_id: int
-    location: Optional[str]
-    address: Optional[str]
-    city: Optional[str]
-    state: Optional[str]
-    zipcode: Optional[str]
 
 
 class TeamScoreInfo(BaseModel):

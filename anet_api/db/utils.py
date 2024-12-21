@@ -14,6 +14,7 @@ from . import (
     ResultCreate,
     Race,
     RaceCreate,
+    Course,
 )
 
 
@@ -41,9 +42,21 @@ def get_object_by_anet_id(
     return session.exec(statement).first()
 
 
+def get_course_by_venue(session: Session, venue: str):
+    statement = select(Course).where(Course.venue == venue)
+    return session.exec(statement).first()
+
+
 def convert_to_seconds(race_time: str):
     c = [60, 1]
     race_time = re.sub("[a-zA-z]", "", race_time)
     print(race_time)
     t = [float(x) for x in race_time.split(":")]
     return sum([np.prod(lst) for lst in zip(c, t)])
+
+
+def normalize_venue(venue: str):
+    v = venue.strip().lower()
+    if v in ["woodland park", "lower woodland"]:
+        v = "lower woodland park"
+    return v

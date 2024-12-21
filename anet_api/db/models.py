@@ -14,6 +14,7 @@ class AbstractBase(SQLModel):
     last_edited: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
 
+# Athlete Models
 class AthleteBase(AbstractBase):
     anet_id: int
     first_name: str
@@ -43,6 +44,7 @@ class AthleteUpdate(AthleteBase):
     age: Optional[int]
 
 
+# Team Models
 class TeamBase(AbstractBase):
     anet_id: int
     name: str
@@ -60,6 +62,7 @@ class TeamRead(TeamBase):
     id: int
 
 
+# Meet Models
 class MeetBase(AbstractBase):
     anet_id: int
     meet: str
@@ -83,6 +86,7 @@ class MeetRead(MeetBase):
     id: int
 
 
+# Race Models
 class RaceBase(AbstractBase):
     anet_id: int
     gender: Optional[str]
@@ -106,6 +110,30 @@ class RaceRead(RaceBase):
     id: int
 
 
+# Course Models
+class CourseBase(AbstractBase):
+    venue: str
+    course_factor: int | None
+
+
+class Course(CourseBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # results: list["Result"] = Relationship(
+    #     back_populates="course",
+    #     sa_relationship_kwargs={"lazy": "selectin"},
+    # )
+
+
+class CourseCreate(CourseBase):
+    pass
+
+
+class CourseRead(CourseBase):
+    id: int
+
+
+# Result Models
 class ResultBase(AbstractBase):
     anet_id: int
     distance: Optional[int]
@@ -126,12 +154,19 @@ class Result(ResultBase, table=True):
 
     race_id: Optional[int] = Field(default=None, foreign_key="race.id")
 
+    course_id: int | None = Field(default=None, foreign_key="course.id")
+    # course: Course = Relationship(
+    #     back_populates="results",
+    #     sa_relationship_kwargs={"lazy": "selectin"},
+    # )
+
 
 class ResultCreate(ResultBase):
     anet_athlete_id: int
     anet_team_id: int
     anet_meet_id: int
     anet_race_id: int
+    venue: str
     result: str
 
 
@@ -142,3 +177,4 @@ class ResultRead(ResultBase):
     athlete_id: int
     meet_id: int
     race_id: int
+    course_id: int
